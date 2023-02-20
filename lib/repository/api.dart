@@ -27,13 +27,10 @@ class Api {
     }
   }
 
-  void getProfile(String? jwtToken) async {
-    String apiUrl = "http://10.0.2.2:8000/api/user/yatri/";
+  void getProfile(String uid) async {
+    String apiUrl = "http://10.0.2.2:8000/api/user/yatri/$uid/";
 
-    var response = await http.get(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $jwtToken',
-    });
+    var response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);

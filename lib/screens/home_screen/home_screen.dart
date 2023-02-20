@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:yatra/repository/api.dart';
 import 'package:yatra/screens/home_screen/widget/home_carousel.dart';
@@ -81,15 +82,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              String? jwtToken = await context
+                              String? jwtTokenJson = await context
                                   .read<AuthProvider>()
                                   .storage
                                   .read(key: "jwt");
-                              final Map<String, dynamic> data =
-                                  jsonDecode(jwtToken!);
+                              var jwt =
+                                  jsonDecode(jwtTokenJson!)["token"]["access"];
+                              String uid =
+                                  JwtDecoder.decode(jwt)["user_id"].toString();
 
-                              api.getProfile(
-                                  data["token"]["access"].toString());
+                              api.getProfile(uid);
                             },
                             child: Text(
                               "See all",
