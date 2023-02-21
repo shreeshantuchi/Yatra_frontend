@@ -82,16 +82,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              String? jwtTokenJson = await context
+                              String? jwtToken = await context
                                   .read<AuthProvider>()
                                   .storage
                                   .read(key: "jwt");
-                              var jwt =
-                                  jsonDecode(jwtTokenJson!)["token"]["access"];
-                              String uid =
-                                  JwtDecoder.decode(jwt)["user_id"].toString();
 
-                              api.getProfile(uid);
+                              api.getProfile(context
+                                  .read<AuthProvider>()
+                                  .getUserId(jwtToken));
                             },
                             child: Text(
                               "See all",
