@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 class JwtToken {
   String? accessToken;
   String? refreshToken;

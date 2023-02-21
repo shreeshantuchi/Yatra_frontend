@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     HomeCarousel(
-                      height: 300,
+                      height: 233,
                       imagePaths: widget.imagePaths,
                       width: MediaQuery.of(context).size.width,
                       scrollDirection: Axis.vertical,
@@ -163,24 +163,29 @@ class WelcomeHeadingText extends StatelessWidget {
   Widget menuIcons(BuildContext context) {
     return Row(
       children: [
-        const Icon(PhosphorIcons.bellBold),
+        GestureDetector(
+          onTap: () async {
+            await context
+                .read<AuthProvider>()
+                .storage
+                .write(key: "jwt", value: null);
+
+            if (await context.read<AuthProvider>().storage.read(key: "jwt") ==
+                null) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, MyRoutes.landRoute, (route) => false);
+            }
+          },
+          child: const Icon(PhosphorIcons.bellBold),
+        ),
         SizedBox(
           width: 20.w,
         ),
-        GestureDetector(
-            onTap: () async {
-              await context
-                  .read<AuthProvider>()
-                  .storage
-                  .write(key: "jwt", value: null);
-
-              if (await context.read<AuthProvider>().storage.read(key: "jwt") ==
-                  null) {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, MyRoutes.landRoute, (route) => false);
-              }
-            },
-            child: const Icon(PhosphorIcons.dotsThreeOutlineVerticalBold))
+        CircleAvatar(
+          radius: 40.sp,
+          backgroundImage: NetworkImage(
+              "https://w0.peakpx.com/wallpaper/409/163/HD-wallpaper-justin-bieber-belieber-beliebers.jpg"),
+        )
       ],
     );
   }

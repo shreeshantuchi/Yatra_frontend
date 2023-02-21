@@ -57,7 +57,10 @@ class LoginScreen extends StatelessWidget {
                     // ),
                     Text(
                       "Your Email Address",
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: MyColor.whiteColor),
                     ),
                     SizedBox(
                       height: 10.h,
@@ -75,7 +78,10 @@ class LoginScreen extends StatelessWidget {
                         }
                         return null;
                       },
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: MyColor.whiteColor),
                       decoration: FormStyle.signUpStyle(
                           context: context, hintText: "example@gmail.com"),
                     ),
@@ -84,14 +90,20 @@ class LoginScreen extends StatelessWidget {
                     ),
                     Text(
                       "Your Password",
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: MyColor.whiteColor),
                     ),
                     SizedBox(
                       height: 10.h,
                     ),
                     TextFormField(
                       controller: _passwordController,
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: MyColor.whiteColor),
                       obscureText: true,
                       decoration: FormStyle.signUpStyle(
                           context: context, hintText: "password"),
