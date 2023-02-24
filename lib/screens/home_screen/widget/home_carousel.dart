@@ -26,7 +26,9 @@ class _HomeCarouselState extends State<HomeCarousel> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: widget.height.h,
+      height: widget.scrollDirection == Axis.vertical
+          ? widget.height.h * 1.8
+          : widget.height.h,
       width: double.infinity,
       child: ListView.builder(
           shrinkWrap: true,

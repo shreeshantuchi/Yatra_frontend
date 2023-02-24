@@ -10,6 +10,7 @@ import 'package:yatra/screens/location_scree/location_screen.dart';
 import 'package:yatra/screens/login_screen/login_screen.dart';
 import 'package:yatra/screens/splash_screen/splash_screen.dart';
 import 'package:yatra/screens/tab_screen/tab-screen.dart';
+import 'package:yatra/screens/user_profile_screen/user_profile_screen.dart';
 import 'package:yatra/services/auth_services.dart';
 import 'package:yatra/services/location_services.dart';
 import 'package:yatra/utils/colors.dart';
@@ -120,6 +121,12 @@ class MyApp extends StatelessWidget {
                   return PageTransition(
                       child: const TabScreen(),
                       type: PageTransitionType.rightToLeftWithFade,
+                      settings: settings,
+                      duration: const Duration(seconds: smallDuration));
+                case MyRoutes.userProfileRoute:
+                  return PageTransition(
+                      child: UserProfileScreen(),
+                      type: PageTransitionType.leftToRightWithFade,
                       settings: settings,
                       duration: const Duration(seconds: smallDuration));
 

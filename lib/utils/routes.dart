@@ -6,4 +6,5 @@ class MyRoutes {
   static const String locationRoute = '/location';
   static const String registerRoute = '/register';
   static const String tabRoute = '/tab';
+  static const String userProfileRoute = '/userProfile';
 }

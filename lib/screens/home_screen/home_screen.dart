@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:yatra/models/user_model.dart';
 import 'package:yatra/repository/api.dart';
+import 'package:yatra/screens/home_screen/all_tab_home_screen/all_tab-screen.dart';
 import 'package:yatra/screens/home_screen/widget/home_carousel.dart';
+import 'package:yatra/screens/user_profile_screen/user_profile_screen.dart';
 import 'package:yatra/services/auth_services.dart';
 import 'package:yatra/services/location_services.dart';
 import 'package:yatra/utils/colors.dart';
@@ -15,7 +18,6 @@ import 'package:provider/provider.dart';
 enum TabItem { home, news, profile }
 
 class HomeScreen extends StatefulWidget {
-  List<String> imagePaths = ["assets/1.jpeg", "assets/2.jpeg", "assets/3.jpeg"];
   HomeScreen({super.key});
 
   @override
@@ -23,7 +25,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Api api = Api();
   @override
   void initState() {
     // TODO: implement initState
@@ -36,80 +37,22 @@ class _HomeScreenState extends State<HomeScreen> {
     return context.watch<LocationService>().placemarks.isNotEmpty
         ? Scaffold(
             body: Padding(
-              padding: EdgeInsets.symmetric(vertical: 80.h, horizontal: 30.h),
+              padding: EdgeInsets.symmetric(vertical: 80.h),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    const WelcomeHeadingText(),
-                    SizedBox(height: 20.h),
-                    const SearchForm(),
-                    SizedBox(height: 20.h),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20.h),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      padding: EdgeInsets.symmetric(horizontal: 30.w),
+                      child: Column(
                         children: [
-                          Text(
-                            "Popular",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3!
-                                .copyWith(color: MyColor.blackColor),
-                          ),
-                          Text(
-                            "See all",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3!
-                                .copyWith(
-                                    color: MyColor.greyColor, fontSize: 18.sp),
-                          ),
+                          const WelcomeHeadingText(),
+                          SizedBox(height: 20.h),
+                          const SearchForm(),
+                          SizedBox(height: 20.h),
                         ],
                       ),
                     ),
-                    HomeCarousel(imagePaths: widget.imagePaths),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 30.h),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Perfect for you",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3!
-                                .copyWith(color: MyColor.blackColor),
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              String? jwtToken = await context
-                                  .read<AuthProvider>()
-                                  .storage
-                                  .read(key: "jwt");
-
-                              api.getProfile(context
-                                  .read<AuthProvider>()
-                                  .getUserId(jwtToken));
-                            },
-                            child: Text(
-                              "See all",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline3!
-                                  .copyWith(
-                                      color: MyColor.greyColor,
-                                      fontSize: 18.sp),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    HomeCarousel(
-                      height: 233,
-                      imagePaths: widget.imagePaths,
-                      width: MediaQuery.of(context).size.width,
-                      scrollDirection: Axis.vertical,
-                    ),
+                    AllTab()
                   ],
                 ),
               ),
@@ -161,6 +104,8 @@ class WelcomeHeadingText extends StatelessWidget {
   }
 
   Widget menuIcons(BuildContext context) {
+    Api api = Api();
+    UserProfile? userProfile;
     return Row(
       children: [
         GestureDetector(
@@ -181,10 +126,21 @@ class WelcomeHeadingText extends StatelessWidget {
         SizedBox(
           width: 20.w,
         ),
-        CircleAvatar(
-          radius: 40.sp,
-          backgroundImage: NetworkImage(
-              "https://w0.peakpx.com/wallpaper/409/163/HD-wallpaper-justin-bieber-belieber-beliebers.jpg"),
+        GestureDetector(
+          onTap: () async {
+            String? jwtToken =
+                await context.read<AuthProvider>().storage.read(key: "jwt");
+
+            userProfile = await api
+                .getProfile(context.read<AuthProvider>().getUserId(jwtToken));
+            Navigator.pushNamed(context, MyRoutes.userProfileRoute,
+                arguments: userProfile);
+          },
+          child: CircleAvatar(
+            radius: 40.sp,
+            backgroundImage: NetworkImage(
+                "https://w0.peakpx.com/wallpaper/409/163/HD-wallpaper-justin-bieber-belieber-beliebers.jpg"),
+          ),
         )
       ],
     );

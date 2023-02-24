@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:yatra/screens/guide_screen/guide_screen.dart';
 import 'package:yatra/screens/home_screen/home_screen.dart';
 import 'package:yatra/screens/register_screen/register_screen.dart';
+import 'package:yatra/screens/home_screen/all_tab_home_screen/all_tab-screen.dart';
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
 

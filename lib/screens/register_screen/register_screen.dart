@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:yatra/services/auth_services.dart';
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/form_style.dart';
 import 'package:yatra/utils/routes.dart';
@@ -14,6 +16,9 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _password2Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String? _password;
   @override
@@ -45,12 +50,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     Text(
                       "Your Email Address",
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: MyColor.whiteColor),
                     ),
                     SizedBox(
                       height: 10.h,
                     ),
                     TextFormField(
+                      controller: _emailController,
                       validator: ((value) {
                         if (value!.isEmpty) {
                           return 'Please enter an email';
@@ -62,7 +71,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         }
                         return null;
                       }),
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: MyColor.whiteColor),
                       decoration: FormStyle.signUpStyle(
                           context: context, hintText: "example@gmail.com"),
                     ),
@@ -71,13 +83,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     Text(
                       "Password",
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: MyColor.whiteColor),
                     ),
                     SizedBox(
                       height: 10.h,
                     ),
                     TextFormField(
-                      onSaved: (newValue) => _password = newValue,
+                      controller: _passwordController,
+                      onChanged: (newValue) => _password = newValue,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Password cannot be empty";
@@ -86,7 +102,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return "Password should be minimum of 8 characters";
                         }
                       },
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: MyColor.whiteColor),
                       obscureText: true,
                       decoration: FormStyle.signUpStyle(
                           context: context, hintText: "Enter your password"),
@@ -96,12 +115,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     Text(
                       "Password",
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: MyColor.whiteColor),
                     ),
                     SizedBox(
                       height: 10.h,
                     ),
                     TextFormField(
+                      controller: _password2Controller,
                       validator: ((value) {
                         if (value!.isEmpty) {
                           return "Password cannot be empty";
@@ -110,10 +133,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return "Password should be minimum of 8 characters";
                         }
                         if (value != _password) {
+                          print(value);
+                          print(_password);
                           return "Password doesnt match";
                         }
                       }),
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: MyColor.whiteColor),
                       obscureText: true,
                       decoration: FormStyle.signUpStyle(
                           context: context, hintText: "Retype your password"),
@@ -141,9 +169,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         text: "Sign Up",
                         textColor: MyColor.blackColor,
                         color: MyColor.whiteColor.withOpacity(0.5),
-                        onTap: () {
+                        onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            Navigator.pushNamed(context, MyRoutes.landRoute);
+                            var jwt = await context
+                                .read<AuthProvider>()
+                                .registerUser(
+                                    email: _emailController.text,
+                                    password: _passwordController.text,
+                                    repassword: _password2Controller.text);
+
+                            if (jwt != null) {
+                              print("in");
+                              Navigator.pushNamed(context, MyRoutes.tabRoute);
+                            } else {
+                              print("error");
+                            }
+
+                            // Form is valid, process data.
                           }
                         }),
                     SizedBox(

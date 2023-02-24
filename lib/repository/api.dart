@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
+import 'package:yatra/models/user_model.dart';
 
 class Api {
   Future<List<LatLng>?> getpoints(
@@ -27,15 +28,18 @@ class Api {
     }
   }
 
-  void getProfile(String uid) async {
+  Future<UserProfile?> getProfile(String uid) async {
+    UserProfile userProfile = UserProfile();
     String apiUrl = "http://10.0.2.2:8000/api/user/yatri/$uid/";
 
     var response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      print(data);
+      userProfile = userProfile.toMap(data);
+      return userProfile;
     } else
       print("error");
+    return null;
   }
 }
