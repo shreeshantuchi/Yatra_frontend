@@ -21,12 +21,12 @@ class _TabScreenState extends State<TabScreen> {
   List<IconData> iconList = [Icons.home, Icons.feed, Icons.person, Icons.abc];
 
   int _currentIndex = 0;
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
-  List<Widget> _pages = [
+  final List<Widget> _pages = [
     HomeScreen(),
-    RegisterScreen(),
-    GuidScreen(),
+    const RegisterScreen(),
+    const GuidScreen(),
   ];
 
   @override
@@ -44,7 +44,7 @@ class _TabScreenState extends State<TabScreen> {
       extendBody: true,
       floatingActionButton: FloatingActionButton(
         backgroundColor: MyColor.redColor,
-        child: Icon(PhosphorIcons.mapPinBold),
+        child: const Icon(PhosphorIcons.mapPinBold),
         onPressed: () {
           Navigator.pushNamed(context, MyRoutes.locationRoute);
         },
@@ -64,7 +64,8 @@ class _TabScreenState extends State<TabScreen> {
           setState(() {
             _currentIndex = index;
             _pageController.animateToPage(index,
-                duration: Duration(milliseconds: 500), curve: Curves.ease);
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.ease);
           });
         },
         //other params

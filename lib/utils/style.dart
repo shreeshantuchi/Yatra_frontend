@@ -8,16 +8,24 @@ class Styles {
     headline1: GoogleFonts.poppins(
         fontSize: 40.0,
         fontWeight: FontWeight.bold,
-        color: Colors.black.withOpacity(0.8)),
+        color: Colors.white.withOpacity(0.8)),
     bodyText1: GoogleFonts.inter(
         fontSize: 15.sp,
-        color: MyColor.blackColor,
+        color: MyColor.whiteColor,
         fontWeight: FontWeight.w400),
-    headline6: GoogleFonts.inter(fontSize: 18.sp, fontWeight: FontWeight.bold),
-    headline3: GoogleFonts.inter(fontSize: 30.sp, fontWeight: FontWeight.bold),
+    headline6: GoogleFonts.inter(
+      fontSize: 18.sp,
+      fontWeight: FontWeight.bold,
+      color: MyColor.whiteColor,
+    ),
+    headline3: GoogleFonts.inter(
+      fontSize: 30.sp,
+      fontWeight: FontWeight.bold,
+      color: MyColor.whiteColor,
+    ),
     bodyText2: GoogleFonts.inter(
         fontSize: 18.sp,
-        color: MyColor.blackColor,
+        color: MyColor.whiteColor,
         fontWeight: FontWeight.w600),
   );
 }

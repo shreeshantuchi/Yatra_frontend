@@ -16,9 +16,9 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    TextEditingController _emailController = TextEditingController();
-    TextEditingController _passwordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return customBackground(
       child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -26,7 +26,7 @@ class LoginScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 36.w, vertical: 20.h),
             child: SingleChildScrollView(
               child: Form(
-                key: _formKey,
+                key: formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -55,7 +55,7 @@ class LoginScreen extends StatelessWidget {
                       height: 10.h,
                     ),
                     TextFormField(
-                      controller: _emailController,
+                      controller: emailController,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter an email';
@@ -88,7 +88,7 @@ class LoginScreen extends StatelessWidget {
                       height: 10.h,
                     ),
                     TextFormField(
-                      controller: _passwordController,
+                      controller: passwordController,
                       style: Theme.of(context)
                           .textTheme
                           .bodyText1!
@@ -129,10 +129,10 @@ class LoginScreen extends StatelessWidget {
                         textColor: MyColor.blackColor,
                         color: MyColor.whiteColor.withOpacity(0.5),
                         onTap: () async {
-                          if (_formKey.currentState!.validate()) {
+                          if (formKey.currentState!.validate()) {
                             var jwt = await context.read<AuthProvider>().login(
-                                email: _emailController.text,
-                                password: _passwordController.text);
+                                email: emailController.text,
+                                password: passwordController.text);
 
                             if (jwt != null) {
                               print("in");
@@ -176,8 +176,8 @@ class LoginScreen extends StatelessWidget {
                         color: Colors.transparent,
                         onTap: () async {
                           var jwt = await context.read<AuthProvider>().login(
-                              email: _emailController.text,
-                              password: _passwordController.text);
+                              email: emailController.text,
+                              password: passwordController.text);
 
                           if (jwt != null) {
                             Navigator.pushNamed(context, MyRoutes.homeRoute);

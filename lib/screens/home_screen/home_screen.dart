@@ -1,19 +1,17 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
+
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:yatra/models/user_model.dart';
 import 'package:yatra/repository/api.dart';
 import 'package:yatra/screens/home_screen/all_tab_home_screen/all_tab-screen.dart';
-import 'package:yatra/screens/home_screen/widget/home_carousel.dart';
-import 'package:yatra/screens/user_profile_screen/user_profile_screen.dart';
+
 import 'package:yatra/services/auth_services.dart';
 import 'package:yatra/services/location_services.dart';
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
 import 'package:provider/provider.dart';
+import 'package:yatra/widget/background.dart';
 
 enum TabItem { home, news, profile }
 
@@ -25,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  UserProfile userProfile = UserProfile();
   @override
   void initState() {
     // TODO: implement initState
@@ -35,25 +34,28 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return context.watch<LocationService>().placemarks.isNotEmpty
-        ? Scaffold(
-            body: Padding(
-              padding: EdgeInsets.symmetric(vertical: 80.h),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30.w),
-                      child: Column(
-                        children: [
-                          const WelcomeHeadingText(),
-                          SizedBox(height: 20.h),
-                          const SearchForm(),
-                          SizedBox(height: 20.h),
-                        ],
+        ? customBackground(
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Padding(
+                padding: EdgeInsets.symmetric(vertical: 80.h),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 30.w),
+                        child: Column(
+                          children: [
+                            welcomeHeadingText(context),
+                            SizedBox(height: 20.h),
+                            const SearchForm(),
+                            SizedBox(height: 20.h),
+                          ],
+                        ),
                       ),
-                    ),
-                    AllTab()
-                  ],
+                      AllTab()
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -62,14 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
             body: Center(child: CircularProgressIndicator()),
           );
   }
-}
 
-class WelcomeHeadingText extends StatelessWidget {
-  final String user;
-  const WelcomeHeadingText({super.key, this.user = "Nancy"});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget welcomeHeadingText(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -91,10 +87,17 @@ class WelcomeHeadingText extends StatelessWidget {
   Widget welcomeText(BuildContext context) {
     return Row(
       children: [
-        Text(
-          "Welcome, $user ",
-          style: Theme.of(context).textTheme.headline6,
-        ),
+        FutureBuilder(
+            future: context.watch<AuthProvider>().getProfile(),
+            builder: ((context, snapshot) {
+              if (snapshot.data != null) {
+                return Text(
+                  "Welcome , ${snapshot.data?.firstName}",
+                  style: Theme.of(context).textTheme.headline6,
+                );
+              }
+              return const SizedBox();
+            })),
         const Icon(
           PhosphorIcons.handWavingFill,
           color: Colors.amber,
@@ -104,23 +107,10 @@ class WelcomeHeadingText extends StatelessWidget {
   }
 
   Widget menuIcons(BuildContext context) {
-    Api api = Api();
-    UserProfile? userProfile;
     return Row(
       children: [
         GestureDetector(
-          onTap: () async {
-            await context
-                .read<AuthProvider>()
-                .storage
-                .write(key: "jwt", value: null);
-
-            if (await context.read<AuthProvider>().storage.read(key: "jwt") ==
-                null) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, MyRoutes.landRoute, (route) => false);
-            }
-          },
+          onTap: () async {},
           child: const Icon(PhosphorIcons.bellBold),
         ),
         SizedBox(
@@ -128,19 +118,19 @@ class WelcomeHeadingText extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () async {
-            String? jwtToken =
-                await context.read<AuthProvider>().storage.read(key: "jwt");
-
-            userProfile = await api
-                .getProfile(context.read<AuthProvider>().getUserId(jwtToken));
-            Navigator.pushNamed(context, MyRoutes.userProfileRoute,
-                arguments: userProfile);
+            Navigator.pushNamed(context, MyRoutes.userProfileRoute);
           },
-          child: CircleAvatar(
-            radius: 40.sp,
-            backgroundImage: NetworkImage(
-                "https://w0.peakpx.com/wallpaper/409/163/HD-wallpaper-justin-bieber-belieber-beliebers.jpg"),
-          ),
+          child: FutureBuilder(
+              future: context.watch<AuthProvider>().getProfile(),
+              builder: ((context, snapshot) {
+                if (snapshot.data != null) {
+                  return CircleAvatar(
+                    radius: 40.sp,
+                    backgroundImage: NetworkImage(snapshot.data!.profileImage!),
+                  );
+                }
+                return const SizedBox();
+              })),
         )
       ],
     );
@@ -154,19 +144,41 @@ class SearchForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(30),
           color: Colors.grey.withOpacity(0.1)),
       child: TextFormField(
+        style: Theme.of(context).textTheme.bodyText1,
         decoration: InputDecoration(
-            suffixIcon: const Icon(PhosphorIcons.slidersHorizontalBold),
-            prefixIcon: const Icon(PhosphorIcons.magnifyingGlassBold),
-            contentPadding: EdgeInsets.symmetric(vertical: 10.w),
-            hintText: "Search",
-            hintStyle: Theme.of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(color: MyColor.blackColor),
-            border: InputBorder.none),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(width: 1.w, color: MyColor.whiteColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(width: 2.w, color: MyColor.whiteColor),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(
+              width: 1.w,
+              color: MyColor.whiteColor.withOpacity(0.5),
+            ),
+          ),
+          suffixIcon: const Icon(
+            PhosphorIcons.slidersHorizontalBold,
+            color: MyColor.whiteColor,
+          ),
+          prefixIcon: const Icon(
+            PhosphorIcons.magnifyingGlassBold,
+            color: MyColor.whiteColor,
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 10.w),
+          hintText: "Search",
+          hintStyle: Theme.of(context)
+              .textTheme
+              .bodyText1!
+              .copyWith(color: MyColor.whiteColor.withOpacity(0.8)),
+        ),
       ),
     );
   }
@@ -194,12 +206,8 @@ class _CurrentLcoationState extends State<CurrentLcoation> {
             width: 5.w,
           ),
           Text(
-            "${context.watch<LocationService>().placemarks.last.locality} , ${context.watch<LocationService>().placemarks.last.country}",
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(color: MyColor.blackColor),
-          )
+              "${context.watch<LocationService>().placemarks.last.locality} , ${context.watch<LocationService>().placemarks.last.country}",
+              style: Theme.of(context).textTheme.bodyText1)
         ],
       ),
     );

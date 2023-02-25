@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/models/user_model.dart';
-import 'package:yatra/screens/home_screen/home_screen.dart';
+
 import 'package:yatra/services/auth_services.dart';
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
@@ -18,8 +17,6 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    final UserProfile userProfile =
-        ModalRoute.of(context)?.settings.arguments as UserProfile;
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -27,41 +24,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "My Profile",
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 40.h,
-              ),
-              profileImage(
-                  imgUrl:
-                      "https://w0.peakpx.com/wallpaper/409/163/HD-wallpaper-justin-bieber-belieber-beliebers.jpg"),
-              SizedBox(
-                height: 20.h,
-              ),
-              Text(
-                "${userProfile.firstName}  ${userProfile.lastName}",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline3!
-                    .copyWith(color: MyColor.blackColor),
-              ),
-              SizedBox(
-                height: 10.h,
-              ),
-              Text(
-                "example@gmail.com",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2!
-                    .copyWith(color: MyColor.greyColor),
-              ),
+              FutureBuilder(
+                  future: context.watch<AuthProvider>().getProfile(),
+                  builder: ((context, snapshot) {
+                    if (snapshot.data != null) {
+                      return userDetails(snapshot.data!);
+                    }
+                    return const SizedBox();
+                  })),
               SizedBox(
                 height: 50.h,
               ),
@@ -70,6 +40,50 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget userDetails(UserProfile userProfile) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "My Profile",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline3!
+                  .copyWith(color: MyColor.blackColor),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 40.h,
+        ),
+        profileImage(imgUrl: userProfile.profileImage!),
+        SizedBox(
+          height: 20.h,
+        ),
+        Text(
+          "${userProfile.firstName}  ${userProfile.lastName}",
+          style: Theme.of(context)
+              .textTheme
+              .headline3!
+              .copyWith(color: MyColor.blackColor),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Text(
+          "${userProfile.email}",
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: MyColor.greyColor),
+        ),
+      ],
     );
   }
 
@@ -98,8 +112,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           onTap: () {},
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.pencilSimpleLineBold),
-          title: Text("Edit Profile"),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text("Edit Profile"),
+          trailing: const Icon(Icons.arrow_forward_ios),
         ),
         SizedBox(
           height: 15.h,
@@ -107,8 +121,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.lockBold),
-          title: Text("Change Password"),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text("Change Password"),
+          trailing: const Icon(Icons.arrow_forward_ios),
         ),
         SizedBox(
           height: 15.h,
@@ -116,8 +130,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.mapPinLineBold),
-          title: Text("Change Location"),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text("Change Location"),
+          trailing: const Icon(Icons.arrow_forward_ios),
         ),
         SizedBox(
           height: 15.h,
@@ -125,8 +139,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ListTile(
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.infoBold),
-          title: Text("App Information"),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text("App Information"),
+          trailing: const Icon(Icons.arrow_forward_ios),
         ),
         SizedBox(
           height: 15.h,
@@ -147,8 +161,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           contentPadding: EdgeInsets.zero,
           leading: customIcon(
               iconData: PhosphorIcons.signOutBold, color: MyColor.redColor),
-          title: Text("Log Out"),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text("Log Out"),
+          trailing: const Icon(Icons.arrow_forward_ios),
         ),
       ],
     );

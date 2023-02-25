@@ -107,7 +107,10 @@ class GuideCard extends StatelessWidget {
                     children: [
                       Text(
                         "${guide["name"]}",
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(color: Colors.black54),
                       ),
                       Row(
                         children: [
@@ -118,7 +121,13 @@ class GuideCard extends StatelessWidget {
                           SizedBox(
                             width: 10.w,
                           ),
-                          Text(guide["rating"].toString())
+                          Text(
+                            guide["rating"].toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1!
+                                .copyWith(color: Colors.black54),
+                          )
                         ],
                       ),
                       Row(
@@ -130,7 +139,13 @@ class GuideCard extends StatelessWidget {
                           SizedBox(
                             width: 10.w,
                           ),
-                          Text(guide["locality"] + " , " + guide["city"]),
+                          Text(
+                            guide["locality"] + " , " + guide["city"],
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1!
+                                .copyWith(color: Colors.black54),
+                          ),
                         ],
                       ),
                       Row(
@@ -142,7 +157,13 @@ class GuideCard extends StatelessWidget {
                           SizedBox(
                             width: 10.w,
                           ),
-                          Text("Nrs ${guide["rate"]} per tour"),
+                          Text(
+                            "Nrs ${guide["rate"]} per tour",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1!
+                                .copyWith(color: Colors.black54),
+                          ),
                         ],
                       ),
                       Padding(

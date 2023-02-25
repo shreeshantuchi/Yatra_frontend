@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yatra/screens/landing_screen/widgets/card.dart';
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
-import 'package:yatra/widget/background.dart';
 import 'package:yatra/widget/custom-button/custom_button.dart';
 
 class LandingScreen extends StatelessWidget {

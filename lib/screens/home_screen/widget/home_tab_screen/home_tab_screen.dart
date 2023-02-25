@@ -1,14 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yatra/screens/home_screen/widget/home_carousel.dart';
 import 'package:yatra/utils/colors.dart';
 
 class HomeTab extends StatefulWidget {
   final List<String> imagePaths;
-  HomeTab({super.key, required this.imagePaths});
+  const HomeTab({super.key, required this.imagePaths});
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -18,6 +16,7 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
@@ -27,13 +26,7 @@ class _HomeTabState extends State<HomeTab> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Popular",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: MyColor.blackColor),
-                  ),
+                  Text("Popular", style: Theme.of(context).textTheme.headline3),
                   Text(
                     "See all",
                     style: Theme.of(context)
@@ -50,13 +43,8 @@ class _HomeTabState extends State<HomeTab> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Perfect for you",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: MyColor.blackColor),
-                  ),
+                  Text("Perfect for you",
+                      style: Theme.of(context).textTheme.headline3),
                   GestureDetector(
                     onTap: () async {},
                     child: Text(

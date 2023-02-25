@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/location/location_provider.dart';
 
 class LocationScreen extends StatefulWidget {
-  LocationScreen({Key? key}) : super(key: key);
+  const LocationScreen({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _LocationScreenState createState() => _LocationScreenState();
 }
 
 class _LocationScreenState extends State<LocationScreen> {
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
+
     context.read<ProviderMaps>().determinePosition();
   }
 
@@ -23,11 +23,11 @@ class _LocationScreenState extends State<LocationScreen> {
   Widget build(BuildContext context) {
     final provmaps = Provider.of<ProviderMaps>(context);
     return provmaps.initialPos == null
-        ? CircularProgressIndicator()
+        ? const CircularProgressIndicator()
         : Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.blueAccent,
-              title: Text(
+              title: const Text(
                 "Google Maps - Route OSRM",
                 style: TextStyle(
                     fontSize: 20,
@@ -40,7 +40,7 @@ class _LocationScreenState extends State<LocationScreen> {
               children: <Widget>[
                 Positioned(
                   top: 0,
-                  child: Container(
+                  child: SizedBox(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
                     child: FlutterMap(
@@ -78,7 +78,7 @@ class _LocationScreenState extends State<LocationScreen> {
                         //color: Colors.white,
                         height: 150,
                         width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(20),
@@ -86,7 +86,7 @@ class _LocationScreenState extends State<LocationScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            Container(
+                            SizedBox(
                                 height: 220,
                                 width: 200,
                                 child: Column(
@@ -112,7 +112,7 @@ class _LocationScreenState extends State<LocationScreen> {
                                                           .longitude
                                                           .toString()
                                                           .substring(0, 7),
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color: Colors.white)),
                                               backgroundColor: index == 0
                                                   ? Colors.green
@@ -125,7 +125,7 @@ class _LocationScreenState extends State<LocationScreen> {
                                       ),
                                     ),
                                     Text("Distance: ${provmaps.distance}",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold)),
                                   ],
                                 )),
@@ -133,7 +133,7 @@ class _LocationScreenState extends State<LocationScreen> {
                               elevation: 1,
                               backgroundColor: Colors.blueAccent,
                               onPressed: provmaps.routermap,
-                              child: Icon(Icons.directions),
+                              child: const Icon(Icons.directions),
                             )
                           ],
                         ))),

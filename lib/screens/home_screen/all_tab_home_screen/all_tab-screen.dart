@@ -63,7 +63,7 @@ class _AllTabState extends State<AllTab> {
                       menuItems[index],
                       style: TextStyle(
                         color: currentPageIndex == index
-                            ? MyColor.blackColor
+                            ? MyColor.whiteColor
                             : Colors.grey,
                         fontWeight: FontWeight.bold,
                       ),

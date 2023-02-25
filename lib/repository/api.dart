@@ -27,19 +27,4 @@ class Api {
       return null;
     }
   }
-
-  Future<UserProfile?> getProfile(String uid) async {
-    UserProfile userProfile = UserProfile();
-    String apiUrl = "http://10.0.2.2:8000/api/user/yatri/$uid/";
-
-    var response = await http.get(Uri.parse(apiUrl));
-
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      userProfile = userProfile.toMap(data);
-      return userProfile;
-    } else
-      print("error");
-    return null;
-  }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
@@ -13,9 +13,9 @@ class HomeCarousel extends StatefulWidget {
   const HomeCarousel(
       {super.key,
       required this.imagePaths,
-      this.width = 160,
+      this.width = 175,
       this.scrollDirection = Axis.horizontal,
-      this.height = 205});
+      this.height = 235});
   final Axis scrollDirection;
 
   @override
@@ -25,7 +25,7 @@ class HomeCarousel extends StatefulWidget {
 class _HomeCarouselState extends State<HomeCarousel> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: widget.scrollDirection == Axis.vertical
           ? widget.height.h * 1.8
           : widget.height.h,
@@ -35,11 +35,16 @@ class _HomeCarouselState extends State<HomeCarousel> {
           scrollDirection: widget.scrollDirection,
           itemCount: widget.imagePaths.length,
           itemBuilder: ((context, index) {
-            return Cards(
-              scrollDirection: widget.scrollDirection,
-              height: widget.height,
-              imagePath: widget.imagePaths[index],
-              width: widget.width,
+            return GestureDetector(
+              onTap: () {
+                print(index);
+              },
+              child: Cards(
+                scrollDirection: widget.scrollDirection,
+                height: widget.height,
+                imagePath: widget.imagePaths[index],
+                width: widget.width,
+              ),
             );
           })),
     );
@@ -61,14 +66,14 @@ class Cards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w),
+      padding: EdgeInsets.symmetric(vertical: 10.h),
       child: Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: [
           Material(
             borderRadius: BorderRadius.circular(20.sp),
             elevation: 4,
-            child: Container(
+            child: SizedBox(
               height: height.h,
               width: width.w,
               child: ClipRRect(
@@ -86,7 +91,7 @@ class Cards extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.sp),
               gradient: LinearGradient(
-                stops: [0.1, 0.5, 1.0],
+                stops: const [0.1, 0.5, 1.0],
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
                 colors: [
@@ -118,7 +123,7 @@ class Cards extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(
+                    const Icon(
                       PhosphorIcons.mapPinFill,
                       color: MyColor.cyanColor,
                     ),
