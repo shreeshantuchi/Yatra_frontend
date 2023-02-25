@@ -4,12 +4,14 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/constant.dart';
 import 'package:yatra/location/location_provider.dart';
+import 'package:yatra/screens/detail_description_screen/detail_description_screen.dart';
 import 'package:yatra/screens/home_screen/home_screen.dart';
 import 'package:yatra/screens/landing_screen/landing_screen.dart';
 import 'package:yatra/screens/location_scree/location_screen.dart';
 import 'package:yatra/screens/login_screen/login_screen.dart';
 import 'package:yatra/screens/splash_screen/splash_screen.dart';
 import 'package:yatra/screens/tab_screen/tab-screen.dart';
+import 'package:yatra/screens/update_details_screen/update_details_screen.dart';
 import 'package:yatra/screens/user_profile_screen/user_profile_screen.dart';
 import 'package:yatra/services/auth_services.dart';
 import 'package:yatra/services/location_services.dart';
@@ -126,6 +128,18 @@ class MyApp extends StatelessWidget {
                 case MyRoutes.userProfileRoute:
                   return PageTransition(
                       child: UserProfileScreen(),
+                      type: PageTransitionType.leftToRightWithFade,
+                      settings: settings,
+                      duration: const Duration(seconds: smallDuration));
+                case MyRoutes.detailedDescriptionRoute:
+                  return PageTransition(
+                      child: DetailDscriptionScreen(),
+                      type: PageTransitionType.leftToRightWithFade,
+                      settings: settings,
+                      duration: const Duration(seconds: smallDuration));
+                case MyRoutes.updateProfileRoute:
+                  return PageTransition(
+                      child: UpdateProfileScreen(),
                       type: PageTransitionType.leftToRightWithFade,
                       settings: settings,
                       duration: const Duration(seconds: smallDuration));

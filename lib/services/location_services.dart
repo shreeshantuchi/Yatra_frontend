@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 class LocationService extends ChangeNotifier {
   Position? position;
@@ -22,7 +23,8 @@ class LocationService extends ChangeNotifier {
     }
     const LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.bestForNavigation,
-        timeLimit: Duration(hours: 1));
+        timeLimit: Duration(hours: 1),
+        distanceFilter: 10);
 
     positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)

@@ -7,4 +7,6 @@ class MyRoutes {
   static const String registerRoute = '/register';
   static const String tabRoute = '/tab';
   static const String userProfileRoute = '/userProfile';
+  static const String detailedDescriptionRoute = '/detailedDescription';
+    static const String updateProfileRoute = '/updateProfileRoute';
 }

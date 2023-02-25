@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:yatra/models/user_model.dart';
-import 'package:yatra/repository/api.dart';
 import 'package:yatra/screens/home_screen/all_tab_home_screen/all_tab-screen.dart';
 
 import 'package:yatra/services/auth_services.dart';
@@ -88,12 +87,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Row(
       children: [
         FutureBuilder(
-            future: context.watch<AuthProvider>().getProfile(),
+            future: context.read<AuthProvider>().getProfile(),
             builder: ((context, snapshot) {
               if (snapshot.data != null) {
                 return Text(
-                  "Welcome , ${snapshot.data?.firstName}",
-                  style: Theme.of(context).textTheme.headline6,
+                  "Namaste  \n${snapshot.data?.firstName}",
+                  style: Theme.of(context).textTheme.headline3,
                 );
               }
               return const SizedBox();

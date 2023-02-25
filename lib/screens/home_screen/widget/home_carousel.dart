@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/services/location_services.dart';
 import 'package:yatra/utils/colors.dart';
+import 'package:yatra/utils/routes.dart';
 
 class HomeCarousel extends StatefulWidget {
   final List imagePaths;
@@ -13,9 +14,9 @@ class HomeCarousel extends StatefulWidget {
   const HomeCarousel(
       {super.key,
       required this.imagePaths,
-      this.width = 175,
+      this.width = 160,
       this.scrollDirection = Axis.horizontal,
-      this.height = 235});
+      this.height = 215});
   final Axis scrollDirection;
 
   @override
@@ -37,7 +38,9 @@ class _HomeCarouselState extends State<HomeCarousel> {
           itemBuilder: ((context, index) {
             return GestureDetector(
               onTap: () {
-                print(index);
+                int arguments = index;
+                Navigator.pushNamed(context, MyRoutes.detailedDescriptionRoute,
+                    arguments: {"index": index, "imgList": widget.imagePaths});
               },
               child: Cards(
                 scrollDirection: widget.scrollDirection,
@@ -66,7 +69,7 @@ class Cards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.h),
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w),
       child: Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: [

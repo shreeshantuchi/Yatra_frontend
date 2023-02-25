@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/models/user_model.dart';
+import 'package:yatra/screens/update_details_screen/update_details_screen.dart';
 
 import 'package:yatra/services/auth_services.dart';
 import 'package:yatra/utils/colors.dart';
@@ -24,14 +25,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FutureBuilder(
-                  future: context.watch<AuthProvider>().getProfile(),
-                  builder: ((context, snapshot) {
-                    if (snapshot.data != null) {
-                      return userDetails(snapshot.data!);
-                    }
-                    return const SizedBox();
-                  })),
+              userDetails(context),
               SizedBox(
                 height: 50.h,
               ),
@@ -43,7 +37,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget userDetails(UserProfile userProfile) {
+  Widget userDetails(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -62,32 +56,48 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         SizedBox(
           height: 40.h,
         ),
-        profileImage(imgUrl: userProfile.profileImage!),
+        profileImage(context),
         SizedBox(
           height: 20.h,
         ),
-        Text(
-          "${userProfile.firstName}  ${userProfile.lastName}",
-          style: Theme.of(context)
-              .textTheme
-              .headline3!
-              .copyWith(color: MyColor.blackColor),
+        FutureBuilder(
+          future: context.watch<AuthProvider>().getProfile(),
+          builder: ((context, snapshot) {
+            if (snapshot.data != null) {
+              print("world");
+              return Text(
+                "${snapshot.data?.firstName!}  ${snapshot.data!.lastName}",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline3!
+                    .copyWith(color: MyColor.blackColor),
+              );
+            }
+            return const SizedBox();
+          }),
         ),
         SizedBox(
           height: 10.h,
         ),
-        Text(
-          "${userProfile.email}",
-          style: Theme.of(context)
-              .textTheme
-              .bodyText2!
-              .copyWith(color: MyColor.greyColor),
-        ),
+        FutureBuilder(
+            future: context.watch<AuthProvider>().getProfile(),
+            builder: ((context, snapshot) {
+              if (snapshot.data != null) {
+                return Text(
+                  snapshot.data!.email!,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2!
+                      .copyWith(color: MyColor.greyColor),
+                );
+              }
+              return const SizedBox();
+            })),
       ],
     );
   }
 
-  Widget profileImage({required String imgUrl}) {
+  Widget profileImage(BuildContext context) {
     return Container(
       height: 120.h,
       width: 120.h,
@@ -97,10 +107,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               color: MyColor.redColor.withOpacity(0.3), width: 4.sp)),
       child: Padding(
         padding: EdgeInsets.all(10.sp),
-        child: CircleAvatar(
-          radius: 60.sp,
-          backgroundImage: NetworkImage(imgUrl),
-        ),
+        child: FutureBuilder(
+            future: context.watch<AuthProvider>().getProfile(),
+            builder: ((context, snapshot) {
+              if (snapshot.data != null) {
+                return CircleAvatar(
+                  radius: 60.sp,
+                  backgroundImage: NetworkImage(snapshot.data!.profileImage!),
+                );
+              }
+              return const SizedBox();
+            })),
       ),
     );
   }
@@ -109,7 +126,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Column(
       children: [
         ListTile(
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, MyRoutes.updateProfileRoute);
+          },
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.pencilSimpleLineBold),
           title: const Text("Edit Profile"),

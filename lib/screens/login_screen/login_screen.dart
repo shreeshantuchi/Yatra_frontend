@@ -136,7 +136,8 @@ class LoginScreen extends StatelessWidget {
 
                             if (jwt != null) {
                               print("in");
-                              Navigator.pushNamed(context, MyRoutes.tabRoute);
+                              Navigator.pushReplacementNamed(
+                                  context, MyRoutes.tabRoute);
                             } else {
                               print("error");
                             }
