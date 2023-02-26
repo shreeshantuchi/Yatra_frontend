@@ -65,6 +65,7 @@ class AuthProvider extends ChangeNotifier {
 
       return userProfile;
     }
+    notifyListeners();
     return userProfile;
   }
 

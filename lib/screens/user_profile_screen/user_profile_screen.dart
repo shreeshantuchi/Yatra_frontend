@@ -66,7 +66,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             if (snapshot.data != null) {
               print("world");
               return Text(
-                "${snapshot.data?.firstName!}  ${snapshot.data!.lastName}",
+                "${snapshot.data?.firstName}  ${snapshot.data!.lastName}",
                 style: Theme.of(context)
                     .textTheme
                     .headline3!
@@ -113,7 +113,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               if (snapshot.data != null) {
                 return CircleAvatar(
                   radius: 60.sp,
-                  backgroundImage: NetworkImage(snapshot.data!.profileImage!),
+                  backgroundImage: snapshot.data!.profileImage != null
+                      ? NetworkImage(snapshot.data!.profileImage!)
+                      : NetworkImage(
+                          "https://thumbs.dreamstime.com/z/add-user-icon-vector-people-new-profile-person-illustration-business-group-symbol-male-195160356.jpg"),
                 );
               }
               return const SizedBox();
@@ -127,7 +130,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       children: [
         ListTile(
           onTap: () {
-            Navigator.pushNamed(context, MyRoutes.updateProfileRoute);
+            Navigator.pushNamed(context, MyRoutes.updateProfileRoute,
+                arguments: false);
           },
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.pencilSimpleLineBold),

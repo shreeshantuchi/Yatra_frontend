@@ -37,6 +37,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       e164Key: "977-NP-0");
   @override
   Widget build(BuildContext context) {
+    bool push = ModalRoute.of(context)!.settings.arguments as bool;
     getUser(context);
 
     return customBackground(
@@ -76,7 +77,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   radius: 60.sp,
                                   backgroundImage: snapshot
                                               .data!.profileImage !=
-                                          ""
+                                          null
                                       ? NetworkImage(
                                           snapshot.data!.profileImage!)
                                       : NetworkImage(
@@ -111,7 +112,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     lastName: _lastNameController.text,
                                     country: _selctedCountry.name,
                                     phoneNumber: _phoneNumberController.text);
-                            Navigator.pop(context);
+                            push
+                                ? Navigator.pushReplacementNamed(
+                                    context, MyRoutes.tabRoute)
+                                : Navigator.pop(context);
                           }
                         }),
                   ]),
@@ -124,9 +128,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   void getUser(BuildContext context) async {
     userProfile = await context.read<AuthProvider>().getProfile();
-    _firstNameController.text = userProfile!.firstName!;
-    _lastNameController.text = userProfile!.lastName!;
-    _phoneNumberController.text = userProfile!.phoneNumber!;
+    if (userProfile!.firstName != null) {
+      _firstNameController.text = userProfile!.firstName!;
+      _lastNameController.text = userProfile!.lastName!;
+      _phoneNumberController.text = userProfile!.phoneNumber!;
+    }
   }
 
 // /Text("+${_selctedCountry.phoneCode}")
@@ -146,7 +152,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               controller: _phoneNumberController,
               validator: (value) {
                 if (value!.isEmpty) {
-                  return "First Name cannot \nbe empty";
+                  return "Phone Number cannot \nbe empty";
                 }
               },
               style: Theme.of(context)

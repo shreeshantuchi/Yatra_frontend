@@ -180,7 +180,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                             if (jwt != null) {
                               print("in");
-                              Navigator.pushNamed(context, MyRoutes.tabRoute);
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  MyRoutes.updateProfileRoute, (route) => false,
+                                  arguments: true);
                             } else {
                               print("error");
                             }

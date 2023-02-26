@@ -110,7 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         GestureDetector(
           onTap: () async {},
-          child: const Icon(PhosphorIcons.bellBold),
+          child: const Icon(
+            PhosphorIcons.bellBold,
+            color: MyColor.whiteColor,
+          ),
         ),
         SizedBox(
           width: 20.w,
@@ -125,7 +128,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (snapshot.data != null) {
                   return CircleAvatar(
                     radius: 40.sp,
-                    backgroundImage: NetworkImage(snapshot.data!.profileImage!),
+                    backgroundImage: snapshot.data!.profileImage != null
+                        ? NetworkImage(snapshot.data!.profileImage!)
+                        : NetworkImage(
+                            "https://thumbs.dreamstime.com/z/add-user-icon-vector-people-new-profile-person-illustration-business-group-symbol-male-195160356.jpg"),
                   );
                 }
                 return const SizedBox();
