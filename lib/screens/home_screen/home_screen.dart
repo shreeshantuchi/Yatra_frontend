@@ -36,25 +36,23 @@ class _HomeScreenState extends State<HomeScreen> {
         ? customBackground(
             child: Scaffold(
               backgroundColor: Colors.transparent,
-              body: Padding(
-                padding: EdgeInsets.symmetric(vertical: 80.h),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 30.w),
-                        child: Column(
-                          children: [
-                            welcomeHeadingText(context),
-                            SizedBox(height: 20.h),
-                            const SearchForm(),
-                            SizedBox(height: 20.h),
-                          ],
-                        ),
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding:
+                          EdgeInsets.only(left: 30.w, right: 30.w, top: 40.h),
+                      child: Column(
+                        children: [
+                          welcomeHeadingText(context),
+                          SizedBox(height: 20.h),
+                          const SearchForm(),
+                          SizedBox(height: 20.h),
+                        ],
                       ),
-                      AllTab()
-                    ],
-                  ),
+                    ),
+                    AllTab()
+                  ],
                 ),
               ),
             ),

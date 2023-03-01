@@ -96,10 +96,11 @@ class AuthProvider extends ChangeNotifier {
     //   request.fields['country'] = country.toString();
     // }
 
-    // if (imageFile != null) {
-    //   request.files
-    //       .add(await http.MultipartFile.fromPath('image', imageFile.path));
-    // }
+    if (imageFile != null) {
+      print("hello" + imageFile.toString());
+      request.files.add(
+          await http.MultipartFile.fromPath('profile_image', imageFile.path));
+    }
 
     final response = await request.send();
     if (response.statusCode == 200) {

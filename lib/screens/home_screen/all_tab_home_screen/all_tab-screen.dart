@@ -58,7 +58,7 @@ class _AllTabState extends State<AllTab> {
                         curve: Curves.decelerate);
                   },
                   child: Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
                     child: Text(
                       menuItems[index],
                       style: TextStyle(

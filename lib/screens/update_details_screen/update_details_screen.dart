@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/models/user_model.dart';
 import 'package:yatra/services/auth_services.dart';
@@ -24,6 +27,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  XFile? image;
+  // Pick an image
+
   Country _selctedCountry = Country(
       phoneCode: "977",
       countryCode: "NP",
@@ -73,15 +80,22 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                       width: 4.sp)),
                               child: Padding(
                                 padding: EdgeInsets.all(10.sp),
-                                child: CircleAvatar(
-                                  radius: 60.sp,
-                                  backgroundImage: snapshot
-                                              .data!.profileImage !=
-                                          null
-                                      ? NetworkImage(
-                                          snapshot.data!.profileImage!)
-                                      : NetworkImage(
-                                          "https://thumbs.dreamstime.com/z/add-user-icon-vector-people-new-profile-person-illustration-business-group-symbol-male-195160356.jpg"),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    image = await _picker.pickImage(
+                                        source: ImageSource.gallery);
+                                    setState(() {});
+                                  },
+                                  child: CircleAvatar(
+                                      radius: 60.sp,
+                                      backgroundImage: image != null
+                                          ? FileImage(File(image!.path))
+                                              as ImageProvider
+                                          : snapshot.data!.profileImage != null
+                                              ? NetworkImage(
+                                                  snapshot.data!.profileImage!)
+                                              : const NetworkImage(
+                                                  "https://thumbs.dreamstime.com/z/add-user-icon-vector-people-new-profile-person-illustration-business-group-symbol-male-195160356.jpg")),
                                 ),
                               ),
                             );
@@ -111,7 +125,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     firstName: _firstNameController.text,
                                     lastName: _lastNameController.text,
                                     country: _selctedCountry.name,
-                                    phoneNumber: _phoneNumberController.text);
+                                    phoneNumber: _phoneNumberController.text,
+                                    imageFile: File(image!.path));
                             push
                                 ? Navigator.pushReplacementNamed(
                                     context, MyRoutes.tabRoute)

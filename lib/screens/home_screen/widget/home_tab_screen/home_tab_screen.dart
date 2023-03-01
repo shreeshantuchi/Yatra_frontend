@@ -21,21 +21,18 @@ class _HomeTabState extends State<HomeTab> {
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 20.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Popular", style: Theme.of(context).textTheme.headline3),
-                  Text(
-                    "See all",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: MyColor.greyColor, fontSize: 18.sp),
-                  ),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Popular", style: Theme.of(context).textTheme.headline3),
+                Text(
+                  "See all",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline3!
+                      .copyWith(color: MyColor.greyColor, fontSize: 18.sp),
+                ),
+              ],
             ),
             HomeCarousel(imagePaths: widget.imagePaths),
             Padding(

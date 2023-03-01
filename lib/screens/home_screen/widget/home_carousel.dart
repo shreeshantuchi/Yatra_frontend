@@ -74,6 +74,7 @@ class Cards extends StatelessWidget {
         alignment: AlignmentDirectional.bottomStart,
         children: [
           Material(
+            color: Colors.redAccent,
             borderRadius: BorderRadius.circular(20.sp),
             elevation: 4,
             child: SizedBox(
@@ -113,6 +114,7 @@ class Cards extends StatelessWidget {
               children: [
                 Text(
                   " Machapuchre",
+                  overflow: TextOverflow.ellipsis,
                   style: scrollDirection != Axis.vertical
                       ? Theme.of(context)
                           .textTheme
@@ -133,13 +135,17 @@ class Cards extends StatelessWidget {
                     SizedBox(
                       width: 5.w,
                     ),
-                    Text(
-                      "${context.watch<LocationService>().placemarks.last.locality} , ${context.watch<LocationService>().placemarks.last.country}",
-                      style: scrollDirection != Axis.vertical
-                          ? Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: MyColor.cyanColor, fontSize: 12.sp)
-                          : Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: MyColor.cyanColor, fontSize: 15.sp),
+                    SizedBox(
+                      width: scrollDirection != Axis.vertical ? 100.w : 250.w,
+                      child: Text(
+                        "${context.watch<LocationService>().placemarks.last.locality} , ${context.watch<LocationService>().placemarks.last.country}",
+                        overflow: TextOverflow.ellipsis,
+                        style: scrollDirection != Axis.vertical
+                            ? Theme.of(context).textTheme.bodySmall!.copyWith(
+                                color: MyColor.cyanColor, fontSize: 12.sp)
+                            : Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                color: MyColor.cyanColor, fontSize: 15.sp),
+                      ),
                     ),
                   ],
                 ),

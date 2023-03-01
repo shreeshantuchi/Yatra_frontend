@@ -30,8 +30,12 @@ class LocationService extends ChangeNotifier {
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((event) async {
       position = event;
-      placemarks = await placemarkFromCoordinates(
-          position!.latitude, position!.longitude);
+      try {
+        placemarks = await placemarkFromCoordinates(
+            position!.latitude, position!.longitude);
+      } catch (e) {
+        print(e);
+      }
       notifyListeners();
     });
   }

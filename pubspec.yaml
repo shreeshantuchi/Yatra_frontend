@@ -51,6 +51,7 @@ dependencies:
   page_transition: "^2.0.9"
   animated_bottom_navigation_bar: ^1.1.0+1
   country_picker: ^2.0.19
+  image_picker: ^0.8.6+4
 
 
 
