@@ -1,30 +1,68 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:yatra/repository/api.dart';
 import 'package:flutter_map/flutter_map.dart';
-
 import 'dart:math' show cos, sqrt, asin;
+import 'package:yatra/utils/colors.dart';
 
 class ProviderMaps with ChangeNotifier {
-  LatLng? _initialposition;
-  late LatLng _finalposition;
+  LatLng? initialposition;
+  LatLng? _finalposition;
   late MapController _mapController;
-  LatLng? get initialPos => _initialposition;
-  LatLng get finalPos => _finalposition;
+  LatLng? get initialPos => initialposition;
   final Set<Marker> _markers = {};
   final Set<Polyline> _polylines = {};
   Set<Marker> get markers => _markers;
   Set<Polyline> get polyline => _polylines;
   String distance = "";
   MapController get mapController => _mapController;
+  Position? position;
+  List<Placemark> placemarks = [];
+
+  StreamSubscription<Position>? positionStream;
 
   void onCreated(MapController controller) {
     _mapController = controller;
     notifyListeners();
   }
 
-  void determinePosition() async {
+  Future<Position?> listenToLocationChange() async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+    const LocationSettings locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        timeLimit: Duration(hours: 1),
+        distanceFilter: 10);
+
+    positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((event) async {
+      position = event;
+      try {
+        placemarks = await placemarkFromCoordinates(
+            position!.latitude, position!.longitude);
+        initialposition = LatLng(position!.latitude, position!.longitude);
+      } catch (e) {
+        print(e);
+      }
+
+      notifyListeners();
+    });
+    return position;
+  }
+
+  Future<Position> determinePosition() async {
     Position position;
     bool serviceEnabled;
     LocationPermission permission;
@@ -60,9 +98,9 @@ class ProviderMaps with ChangeNotifier {
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     position = await Geolocator.getCurrentPosition();
-    _initialposition = LatLng(position.latitude, position.longitude);
-
+    initialposition = LatLng(position.latitude, position.longitude);
     notifyListeners();
+    return position;
   }
 
   String calculatedistance(double lat1, double lon1, double lat2, double lon2) {
@@ -81,37 +119,56 @@ class ProviderMaps with ChangeNotifier {
     }
   }
 
-  void addMarker(LatLng location) {
+  void addMarker(LatLng location, String imgUrl) {
     if (markers.length < 2) {
       _markers.add(Marker(
-        builder: (context) => const Icon(Icons.location_pin),
+        height: 50.h,
+        width: 50.h,
+        anchorPos: AnchorPos.align(AnchorAlign.top),
+        builder: (context) {
+          return Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: MyColor.redColor,
+            ),
+            height: 100,
+            width: 100,
+            child: Padding(
+              padding: EdgeInsets.all(5.0.sp),
+              child: CircleAvatar(
+                backgroundColor: Colors.black,
+                radius: 60.sp,
+                backgroundImage: NetworkImage(imgUrl),
+              ),
+            ),
+          );
+        },
         point: location,
       ));
     }
-    notifyListeners();
   }
 
   void routermap() async {
     polyline.clear();
     for (int i = 0; i < markers.length; i++) {
       if (i == 0) {
-        _initialposition = markers.elementAt(i).point;
+        initialposition = markers.elementAt(i).point;
       }
       if (i == 1) {
         _finalposition = markers.elementAt(i).point;
       }
     }
     List<LatLng>? polylines = await Api().getpoints(
-        _initialposition!.longitude.toString(),
-        _initialposition!.latitude.toString(),
-        _finalposition.longitude.toString(),
-        _finalposition.latitude.toString());
+        initialposition!.longitude.toString(),
+        initialposition!.latitude.toString(),
+        _finalposition!.longitude.toString(),
+        _finalposition!.latitude.toString());
     createpolyline(polylines!);
     distance = calculatedistance(
-        _initialposition!.latitude,
-        _initialposition!.longitude,
-        _finalposition.latitude,
-        _finalposition.longitude);
+        initialposition!.latitude,
+        initialposition!.longitude,
+        _finalposition!.latitude,
+        _finalposition!.longitude);
     notifyListeners();
   }
 
@@ -121,9 +178,15 @@ class ProviderMaps with ChangeNotifier {
     notifyListeners();
   }
 
-  void cleanpoint(int index) {
+  void cleanpoint() {
     polyline.clear();
     distance = '';
-    markers.remove(markers.elementAt(index));
+    markers.clear();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    positionStream?.cancel();
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/models/user_model.dart';
+import 'package:yatra/screens/selectPreferenceScreen/select_prefernece_screen.dart';
 import 'package:yatra/screens/update_details_screen/update_details_screen.dart';
 
 import 'package:yatra/services/auth_services.dart';
@@ -151,6 +152,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           height: 15.h,
         ),
         ListTile(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) => SelectPreferneceScreen())));
+          },
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.mapPinLineBold),
           title: const Text("Change Location"),

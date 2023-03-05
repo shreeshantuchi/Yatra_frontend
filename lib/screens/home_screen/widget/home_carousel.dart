@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:yatra/services/location_services.dart';
+import 'package:yatra/location/location_provider.dart';
+
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
 
@@ -138,7 +139,7 @@ class Cards extends StatelessWidget {
                     SizedBox(
                       width: scrollDirection != Axis.vertical ? 100.w : 250.w,
                       child: Text(
-                        "${context.watch<LocationService>().placemarks.last.locality} , ${context.watch<LocationService>().placemarks.last.country}",
+                        "${context.watch<ProviderMaps>().placemarks.last.locality} , ${context.watch<ProviderMaps>().placemarks.last.country}",
                         overflow: TextOverflow.ellipsis,
                         style: scrollDirection != Axis.vertical
                             ? Theme.of(context).textTheme.bodySmall!.copyWith(

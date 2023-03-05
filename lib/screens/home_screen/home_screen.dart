@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:yatra/location/location_provider.dart';
 import 'package:yatra/models/user_model.dart';
 import 'package:yatra/screens/home_screen/all_tab_home_screen/all_tab-screen.dart';
 
 import 'package:yatra/services/auth_services.dart';
-import 'package:yatra/services/location_services.dart';
+
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
 import 'package:provider/provider.dart';
@@ -26,13 +27,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    context.read<LocationService>().determinePosition();
-    context.read<LocationService>().listenToLocationChange();
+
+    context.read<ProviderMaps>().listenToLocationChange();
   }
 
   @override
   Widget build(BuildContext context) {
-    return context.watch<LocationService>().placemarks.isNotEmpty
+    return context.watch<ProviderMaps>().placemarks.isNotEmpty
         ? customBackground(
             child: Scaffold(
               backgroundColor: Colors.transparent,
@@ -209,7 +210,7 @@ class _CurrentLcoationState extends State<CurrentLcoation> {
             width: 5.w,
           ),
           Text(
-              "${context.watch<LocationService>().placemarks.last.locality} , ${context.watch<LocationService>().placemarks.last.country}",
+              "${context.watch<ProviderMaps>().placemarks.last.locality} , ${context.watch<ProviderMaps>().placemarks.last.country}",
               style: Theme.of(context).textTheme.bodyText1)
         ],
       ),

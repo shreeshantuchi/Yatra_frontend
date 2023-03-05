@@ -14,7 +14,7 @@ import 'package:yatra/screens/tab_screen/tab-screen.dart';
 import 'package:yatra/screens/update_details_screen/update_details_screen.dart';
 import 'package:yatra/screens/user_profile_screen/user_profile_screen.dart';
 import 'package:yatra/services/auth_services.dart';
-import 'package:yatra/services/location_services.dart';
+
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
 import 'package:yatra/utils/style.dart';
@@ -25,7 +25,6 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => LocationService()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ProviderMaps()),
       ],
@@ -100,14 +99,6 @@ class MyApp extends StatelessWidget {
                 case MyRoutes.homeRoute:
                   return PageTransition(
                     child: HomeScreen(),
-                    type: PageTransitionType.rightToLeftWithFade,
-                    settings: settings,
-                    duration: const Duration(seconds: smallDuration),
-                  );
-
-                case MyRoutes.locationRoute:
-                  return PageTransition(
-                    child: LocationScreen(),
                     type: PageTransitionType.rightToLeftWithFade,
                     settings: settings,
                     duration: const Duration(seconds: smallDuration),
