@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/constant.dart';
 import 'package:yatra/location/location_provider.dart';
+import 'package:yatra/repository/interest_api.dart';
 import 'package:yatra/screens/detail_description_screen/detail_description_screen.dart';
 import 'package:yatra/screens/home_screen/home_screen.dart';
 import 'package:yatra/screens/landing_screen/landing_screen.dart';
@@ -27,6 +29,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ProviderMaps()),
+        ChangeNotifierProvider(create: (_) => InterestAPi()),
       ],
       child: const MyApp(),
     ),
@@ -39,6 +42,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // final storage = const FlutterSecureStorage();
+    // storage.deleteAll();
+
     return ScreenUtilInit(
         designSize: const Size(430, 932),
         minTextAdapt: true,

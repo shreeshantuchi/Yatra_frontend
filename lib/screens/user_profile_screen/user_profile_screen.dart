@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:yatra/models/user_model.dart';
+
+import 'package:yatra/repository/interest_api.dart';
 import 'package:yatra/screens/selectPreferenceScreen/select_prefernece_screen.dart';
-import 'package:yatra/screens/update_details_screen/update_details_screen.dart';
 
 import 'package:yatra/services/auth_services.dart';
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
 
 class UserProfileScreen extends StatefulWidget {
+  const UserProfileScreen({super.key});
+
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
@@ -21,6 +23,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(backgroundColor: Colors.transparent),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 25.h),
           child: Column(
@@ -127,6 +130,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   Widget ListTiles() {
+    InterestAPi interestAPi = InterestAPi();
     return Column(
       children: [
         ListTile(
@@ -143,6 +147,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           height: 15.h,
         ),
         ListTile(
+          onTap: () async {},
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.lockBold),
           title: const Text("Change Password"),
@@ -152,21 +157,31 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           height: 15.h,
         ),
         ListTile(
-          onTap: () {
+          onTap: () async {
+            List<int> interest = [];
+            interest = await interestAPi.getYatriInterestList();
+
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: ((context) => SelectPreferneceScreen())));
+                    builder: ((context) => SelectPreferneceScreen(
+                          push: false,
+                          interestSelected: interest,
+                        ))));
           },
           contentPadding: EdgeInsets.zero,
-          leading: customIcon(iconData: PhosphorIcons.mapPinLineBold),
-          title: const Text("Change Location"),
+          leading: customIcon(iconData: PhosphorIcons.heartBold),
+          title: const Text("Your Interests"),
           trailing: const Icon(Icons.arrow_forward_ios),
         ),
         SizedBox(
           height: 15.h,
         ),
         ListTile(
+          onTap: () {
+            InterestAPi interestAPi = InterestAPi();
+            interestAPi.getYatriInterestList();
+          },
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.infoBold),
           title: const Text("App Information"),

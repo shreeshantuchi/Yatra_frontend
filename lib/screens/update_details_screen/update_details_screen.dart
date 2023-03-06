@@ -7,6 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/models/user_model.dart';
+import 'package:yatra/repository/interest_api.dart';
+import 'package:yatra/screens/selectPreferenceScreen/select_prefernece_screen.dart';
 import 'package:yatra/services/auth_services.dart';
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/form_style.dart';
@@ -22,6 +24,7 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+  InterestAPi interestAPi = InterestAPi();
   UserProfile? userProfile;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
@@ -118,18 +121,37 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         color: MyColor.redColor,
                         text: "Done",
                         onTap: () async {
+                          List<int> interest = [];
+                          interest = await interestAPi.getYatriInterestList();
+
                           if (_formKey.currentState!.validate()) {
-                            await context
-                                .read<AuthProvider>()
-                                .updateUserProfile(
-                                    firstName: _firstNameController.text,
-                                    lastName: _lastNameController.text,
-                                    country: _selctedCountry.name,
-                                    phoneNumber: _phoneNumberController.text,
-                                    imageFile: File(image!.path));
+                            image == null
+                                ? await context
+                                    .read<AuthProvider>()
+                                    .updateUserProfile(
+                                      firstName: _firstNameController.text,
+                                      lastName: _lastNameController.text,
+                                      country: _selctedCountry.name,
+                                      phoneNumber: _phoneNumberController.text,
+                                    )
+                                : await context
+                                    .read<AuthProvider>()
+                                    .updateUserProfile(
+                                        firstName: _firstNameController.text,
+                                        lastName: _lastNameController.text,
+                                        country: _selctedCountry.name,
+                                        phoneNumber:
+                                            _phoneNumberController.text,
+                                        imageFile: File(image!.path));
                             push
-                                ? Navigator.pushReplacementNamed(
-                                    context, MyRoutes.tabRoute)
+                                ? Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: ((context) =>
+                                            SelectPreferneceScreen(
+                                              push: true,
+                                              interestSelected: interest,
+                                            ))))
                                 : Navigator.pop(context);
                           }
                         }),

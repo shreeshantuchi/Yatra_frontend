@@ -3,21 +3,25 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yatra/constant.dart';
+import 'package:yatra/models/interest_model.dart';
+import 'package:yatra/repository/interest_api.dart';
 import 'package:yatra/utils/colors.dart';
+import 'package:yatra/utils/routes.dart';
 import 'package:yatra/widget/background.dart';
 import 'package:yatra/widget/custom-button/custom_button.dart';
 
 class SelectPreferneceScreen extends StatefulWidget {
-  const SelectPreferneceScreen({super.key});
+  List<int> interestSelected = [];
+  final bool push;
+  SelectPreferneceScreen(
+      {super.key, required this.interestSelected, required this.push});
 
   @override
   State<SelectPreferneceScreen> createState() => _SelectPreferneceScreenState();
 }
 
 class _SelectPreferneceScreenState extends State<SelectPreferneceScreen> {
-  List<String> preferenceDestinationSelected = [];
-  List<String> preferenceFoodSelected = [];
-  List<String> preferenceActivitySelected = [];
+  InterestAPi interestAPi = InterestAPi();
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +37,18 @@ class _SelectPreferneceScreenState extends State<SelectPreferneceScreen> {
                 " Destinations",
                 style: Theme.of(context).textTheme.headline3,
               ),
-              PreferenceGrid(
-                preferences: destinationPreference,
-                preferencesList: preferenceDestinationSelected,
-              ),
+              FutureBuilder(
+                  future: interestAPi.getDestinationInterestList(),
+                  builder: (context, snapshot) {
+                    if (snapshot.data != null) {
+                      return PreferenceGrid(
+                        preferences: snapshot.data!,
+                        preferencesList: widget.interestSelected,
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
               SizedBox(
                 height: 20.h,
               ),
@@ -44,10 +56,18 @@ class _SelectPreferneceScreenState extends State<SelectPreferneceScreen> {
                 "Food",
                 style: Theme.of(context).textTheme.headline3,
               ),
-              PreferenceGrid(
-                preferences: foodPreference,
-                preferencesList: preferenceFoodSelected,
-              ),
+              FutureBuilder(
+                  future: interestAPi.getFoodInterestList(),
+                  builder: (context, snapshot) {
+                    if (snapshot.data != null) {
+                      return PreferenceGrid(
+                        preferences: snapshot.data!,
+                        preferencesList: widget.interestSelected,
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
               SizedBox(
                 height: 20.h,
               ),
@@ -55,10 +75,17 @@ class _SelectPreferneceScreenState extends State<SelectPreferneceScreen> {
                 "Activities",
                 style: Theme.of(context).textTheme.headline3,
               ),
-              PreferenceGrid(
-                preferences: activitiesPreference,
-                preferencesList: preferenceActivitySelected,
-              ),
+              FutureBuilder(
+                  future: interestAPi.getActivitiesInterestList(),
+                  builder: (context, snapshot) {
+                    if (snapshot.data != null) {
+                      return PreferenceGrid(
+                        preferences: snapshot.data!,
+                        preferencesList: widget.interestSelected,
+                      );
+                    } else
+                      return CircularProgressIndicator();
+                  }),
               SizedBox(
                 height: 50.h,
               ),
@@ -69,9 +96,13 @@ class _SelectPreferneceScreenState extends State<SelectPreferneceScreen> {
                     radius: 40.sp,
                     horizontalPadding: 100,
                     text: "Set",
-                    onTap: () {
-                      setState(() {});
-                      Navigator.pop(context);
+                    onTap: () async {
+                      await interestAPi.updateInterest(
+                          interestList: widget.interestSelected);
+                      widget.push
+                          ? Navigator.pushReplacementNamed(
+                              context, MyRoutes.tabRoute)
+                          : Navigator.pop(context);
                     },
                     color: MyColor.redColor,
                   )
@@ -86,16 +117,17 @@ class _SelectPreferneceScreenState extends State<SelectPreferneceScreen> {
 }
 
 class PreferenceGrid extends StatefulWidget {
-  final List preferences;
+  final List<InterestModel> preferences;
   const PreferenceGrid(
       {super.key, required this.preferences, required this.preferencesList});
-  final List preferencesList;
+  final List<int> preferencesList;
 
   @override
   State<PreferenceGrid> createState() => _PreferenceGridState();
 }
 
 class _PreferenceGridState extends State<PreferenceGrid> {
+  InterestAPi interestAPi = InterestAPi();
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -108,23 +140,32 @@ class _PreferenceGridState extends State<PreferenceGrid> {
           crossAxisSpacing: 4.0,
           mainAxisSpacing: 8.0),
       itemBuilder: ((context, index) {
-        print(widget.preferences[index]);
-        return PreferenceButton(
-          preferenceText: widget.preferences[index].toString(),
-          preferencesListSelected: widget.preferencesList,
-        );
+        return FutureBuilder(
+            future: interestAPi.getYatriInterestList(),
+            builder: (context, snapshot) {
+              if (snapshot.data != null) {
+                return PreferenceButton(
+                  preference: widget.preferences[index],
+                  preferencesListSelected: widget.preferencesList,
+                  isSelected:
+                      snapshot.data!.contains(widget.preferences[index].id),
+                );
+              } else
+                return SizedBox();
+            });
       }),
     );
   }
 }
 
 class PreferenceButton extends StatefulWidget {
-  final String preferenceText;
-  final List preferencesListSelected;
-  bool isSelected = false;
+  final InterestModel preference;
+  final List<int> preferencesListSelected;
+  bool isSelected;
   PreferenceButton(
       {super.key,
-      required this.preferenceText,
+      required this.isSelected,
+      required this.preference,
       required this.preferencesListSelected});
 
   @override
@@ -134,14 +175,13 @@ class PreferenceButton extends StatefulWidget {
 class _PreferenceButtonState extends State<PreferenceButton> {
   @override
   Widget build(BuildContext context) {
-    print(widget.preferencesListSelected);
     return GestureDetector(
       onTap: () {
+        widget.isSelected
+            ? widget.preferencesListSelected.remove(widget.preference.id!)
+            : widget.preferencesListSelected.add(widget.preference.id!);
         setState(() {
           widget.isSelected = !widget.isSelected;
-          widget.isSelected
-              ? widget.preferencesListSelected.add(widget.preferenceText)
-              : widget.preferencesListSelected.remove(widget.preferenceText);
         });
       },
       child: Container(
@@ -157,7 +197,7 @@ class _PreferenceButtonState extends State<PreferenceButton> {
             )),
         child: Center(
             child: Text(
-          widget.preferenceText,
+          widget.preference.name!,
           style: Theme.of(context).textTheme.bodyText2!.copyWith(
               color:
                   widget.isSelected ? MyColor.blackColor : MyColor.whiteColor),
