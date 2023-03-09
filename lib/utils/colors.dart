@@ -8,4 +8,5 @@ class MyColor {
   static Color blackColor = Colors.black.withOpacity(0.8);
   static const Color redColor = Color(0xff990E2A);
   static const Color cyanColor = Color(0xff2DB9E5);
+  static const Color blueColor = Color(0xff2DB9E5);
 }
