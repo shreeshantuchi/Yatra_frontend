@@ -93,7 +93,7 @@ class _DetailDscriptionScreenState extends State<DetailDscriptionScreen> {
             iconData: PhosphorIcons.starFill,
             iconColor: Colors.yellow,
             text: "Rating",
-            reviewRatingValue: double.parse(dataModel.rating!),
+            reviewRatingValue: 5,
             reviewNumber: 100),
         rateReviewDetails(
             iconData: PhosphorIcons.currencyDollar,

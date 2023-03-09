@@ -180,7 +180,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
         ListTile(
           onTap: () {
-            FoodApi foodApi = FoodApi();
+            DataApi foodApi = DataApi();
             foodApi.getFoodList();
           },
           contentPadding: EdgeInsets.zero,

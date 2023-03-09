@@ -15,7 +15,7 @@ class AllTab extends StatefulWidget {
 }
 
 class _AllTabState extends State<AllTab> {
-  FoodApi foodApi = FoodApi();
+  DataApi dataApi = DataApi();
   final List<String> menuItems = ["All", "Destination", "Food", "Activities"];
   List<String> destinationImagePaths = [
     "assets/1.jpeg",
@@ -90,7 +90,7 @@ class _AllTabState extends State<AllTab> {
             controller: pageController,
             children: [
               FutureBuilder(
-                  future: foodApi.getFoodList(),
+                  future: dataApi.getDestinationList(),
                   builder: ((context, snapshot) {
                     if (snapshot.data != null) {
                       return HomeTab(
@@ -98,29 +98,45 @@ class _AllTabState extends State<AllTab> {
                         imagePaths: foodImagePaths,
                       );
                     } else {
-                      return CircularProgressIndicator();
+                      return Center(
+                          child: SizedBox(
+                              height: 40.h,
+                              width: 40.h,
+                              child: CircularProgressIndicator()));
                     }
                   })),
-              FutureBuilder(builder: ((context, snapshot) {
-                if (snapshot.data != null) {
-                  return HomeTab(
-                    dataModel: snapshot.data as List<DataModel>,
-                    imagePaths: foodImagePaths,
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
-              })),
-              FutureBuilder(builder: ((context, snapshot) {
-                if (snapshot.data != null) {
-                  return HomeTab(
-                    dataModel: snapshot.data as List<DataModel>,
-                    imagePaths: foodImagePaths,
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
-              })),
+              FutureBuilder(
+                  future: dataApi.getDestinationList(),
+                  builder: ((context, snapshot) {
+                    if (snapshot.data != null) {
+                      return HomeTab(
+                        dataModel: snapshot.data as List<DataModel>,
+                        imagePaths: foodImagePaths,
+                      );
+                    } else {
+                      return Center(
+                          child: SizedBox(
+                              height: 40.h,
+                              width: 40.h,
+                              child: CircularProgressIndicator()));
+                    }
+                  })),
+              FutureBuilder(
+                  future: dataApi.getFoodList(),
+                  builder: ((context, snapshot) {
+                    if (snapshot.data != null) {
+                      return HomeTab(
+                        dataModel: snapshot.data as List<DataModel>,
+                        imagePaths: foodImagePaths,
+                      );
+                    } else {
+                      return Center(
+                          child: SizedBox(
+                              height: 40.h,
+                              width: 40.h,
+                              child: CircularProgressIndicator()));
+                    }
+                  })),
             ],
           ),
         ),

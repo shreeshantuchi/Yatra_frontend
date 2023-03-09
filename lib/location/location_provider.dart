@@ -153,7 +153,7 @@ class ProviderMaps with ChangeNotifier {
 
   void createpolyline(List<LatLng> polylines) {
     _polylines.add(
-        Polyline(strokeWidth: 5, points: polylines, color: Colors.redAccent));
+        Polyline(strokeWidth: 5, points: polylines, color: MyColor.blueColor));
     notifyListeners();
   }
 
