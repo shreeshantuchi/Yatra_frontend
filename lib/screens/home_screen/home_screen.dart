@@ -27,40 +27,33 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     // TODO: implement initState
-
-    context.read<ProviderMaps>().listenToLocationChange();
   }
 
   @override
   Widget build(BuildContext context) {
-    return context.watch<ProviderMaps>().placemarks.isNotEmpty
-        ? customBackground(
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: SingleChildScrollView(
+    return customBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 30.w, right: 30.w, top: 40.h),
                 child: Column(
                   children: [
-                    Padding(
-                      padding:
-                          EdgeInsets.only(left: 30.w, right: 30.w, top: 40.h),
-                      child: Column(
-                        children: [
-                          welcomeHeadingText(context),
-                          SizedBox(height: 20.h),
-                          const SearchForm(),
-                          SizedBox(height: 20.h),
-                        ],
-                      ),
-                    ),
-                    AllTab()
+                    welcomeHeadingText(context),
+                    SizedBox(height: 20.h),
+                    const SearchForm(),
+                    SizedBox(height: 20.h),
                   ],
                 ),
               ),
-            ),
-          )
-        : const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+              AllTab()
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget welcomeHeadingText(BuildContext context) {
@@ -209,9 +202,17 @@ class _CurrentLcoationState extends State<CurrentLcoation> {
           SizedBox(
             width: 5.w,
           ),
-          Text(
-              "${context.watch<ProviderMaps>().placemarks.last.locality} , ${context.watch<ProviderMaps>().placemarks.last.country}",
-              style: Theme.of(context).textTheme.bodyText1)
+          StreamBuilder(
+              stream: context.read<ProviderMaps>().listenToPlacemarkChange(),
+              builder: ((context, snapshot) {
+                if (snapshot.data == null) {
+                  return CircularProgressIndicator();
+                } else {
+                  return Text(
+                      "${snapshot.data!.last.locality} , ${snapshot.data!.last.country}",
+                      style: Theme.of(context).textTheme.bodyText1);
+                }
+              })),
         ],
       ),
     );

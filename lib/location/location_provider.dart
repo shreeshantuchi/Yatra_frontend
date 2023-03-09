@@ -23,7 +23,8 @@ class ProviderMaps with ChangeNotifier {
   MapController get mapController => _mapController;
   Position? position;
   List<Placemark> placemarks = [];
-
+  StreamController<List<Placemark>> controller =
+      StreamController<List<Placemark>>();
   StreamSubscription<Position>? positionStream;
 
   void onCreated(MapController controller) {
@@ -31,7 +32,8 @@ class ProviderMaps with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Position?> listenToLocationChange() async {
+  void checkLocationPermission() async {
+    position = await determinePosition();
     LocationPermission permission;
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -40,6 +42,19 @@ class ProviderMaps with ChangeNotifier {
         return Future.error('Location permissions are denied');
       }
     }
+  }
+
+  Stream<Position> listenToLocationChange() {
+    const LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.bestForNavigation,
+      timeLimit: Duration(microseconds: 1),
+    );
+
+    return Geolocator.getPositionStream(locationSettings: locationSettings);
+  }
+
+  Stream<List<Placemark>> listenToPlacemarkChange() {
+    Stream<List<Placemark>> stream = controller.stream;
     const LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.bestForNavigation,
         timeLimit: Duration(hours: 1),
@@ -48,57 +63,20 @@ class ProviderMaps with ChangeNotifier {
     positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((event) async {
+      print("hello");
+      print(position);
       position = event;
-      try {
-        placemarks = await placemarkFromCoordinates(
-            position!.latitude, position!.longitude);
-        initialposition = LatLng(position!.latitude, position!.longitude);
-      } catch (e) {
-        print(e);
-      }
-
-      notifyListeners();
+      placemarks = await placemarkFromCoordinates(
+          position!.latitude, position!.longitude);
+      controller.add(placemarks);
     });
-    return position;
+
+    return stream;
   }
 
-  Future<Position> determinePosition() async {
-    Position position;
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
+  Future<Position?> determinePosition() async {
     position = await Geolocator.getCurrentPosition();
-    initialposition = LatLng(position.latitude, position.longitude);
+    initialposition = LatLng(position!.latitude, position!.longitude);
     notifyListeners();
     return position;
   }
@@ -158,6 +136,7 @@ class ProviderMaps with ChangeNotifier {
         _finalposition = markers.elementAt(i).point;
       }
     }
+    print(_finalposition);
     List<LatLng>? polylines = await Api().getpoints(
         initialposition!.longitude.toString(),
         initialposition!.latitude.toString(),
@@ -188,5 +167,6 @@ class ProviderMaps with ChangeNotifier {
   void dispose() {
     super.dispose();
     positionStream?.cancel();
+    controller.close();
   }
 }

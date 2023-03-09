@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:yatra/models/food_model.dart';
 import 'package:yatra/screens/home_screen/widget/home_carousel.dart';
 import 'package:yatra/utils/colors.dart';
 
 class HomeTab extends StatefulWidget {
   final List<String> imagePaths;
-  const HomeTab({super.key, required this.imagePaths});
+  final List<DataModel> dataModel;
+  const HomeTab({super.key, required this.imagePaths, required this.dataModel});
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -34,7 +36,10 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ],
             ),
-            HomeCarousel(imagePaths: widget.imagePaths),
+            HomeCarousel(
+              imagePaths: "",
+              dataModelList: widget.dataModel,
+            ),
             Padding(
               padding: EdgeInsets.only(top: 30.h, bottom: 20.h),
               child: Row(
@@ -56,8 +61,9 @@ class _HomeTabState extends State<HomeTab> {
               ),
             ),
             HomeCarousel(
+              dataModelList: widget.dataModel,
               height: 233,
-              imagePaths: widget.imagePaths,
+              imagePaths: "assets/1.jpeg",
               width: MediaQuery.of(context).size.width,
               scrollDirection: Axis.vertical,
             ),

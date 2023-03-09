@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:yatra/repository/food_api.dart';
 
 import 'package:yatra/repository/interest_api.dart';
 import 'package:yatra/screens/selectPreferenceScreen/select_prefernece_screen.dart';
@@ -179,8 +180,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
         ListTile(
           onTap: () {
-            InterestAPi interestAPi = InterestAPi();
-            interestAPi.getYatriInterestList();
+            FoodApi foodApi = FoodApi();
+            foodApi.getFoodList();
           },
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.infoBold),

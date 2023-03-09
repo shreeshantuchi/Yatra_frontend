@@ -12,16 +12,14 @@ class InterestAPi extends ChangeNotifier {
   InterestModel _interestModel = InterestModel();
   Future<List<InterestModel>> getDestinationInterestList() async {
     List<InterestModel> destinationList = [];
-    String interestUrl = "http://10.0.2.2:8000/api/interests/";
+    String interestUrl = "http://10.0.2.2:8000/api/interests/DES/";
     var response = await http.get(Uri.parse(interestUrl));
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       for (int i = 0; i < data.length; i++) {
         _interestModel = _interestModel.toMap(data[i]);
 
-        if (_interestModel.type == "DES") {
-          destinationList.add(_interestModel);
-        }
+        destinationList.add(_interestModel);
       }
     }
     return destinationList;
@@ -29,16 +27,14 @@ class InterestAPi extends ChangeNotifier {
 
   Future<List<InterestModel>> getFoodInterestList() async {
     List<InterestModel> foodList = [];
-    String interestUrl = "http://10.0.2.2:8000/api/interests/";
+    String interestUrl = "http://10.0.2.2:8000/api/interests/FOD/";
     var response = await http.get(Uri.parse(interestUrl));
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       for (int i = 0; i < data.length; i++) {
         _interestModel = _interestModel.toMap(data[i]);
 
-        if (_interestModel.type == "FOD") {
-          foodList.add(_interestModel);
-        }
+        foodList.add(_interestModel);
       }
     }
     return foodList;
@@ -46,16 +42,14 @@ class InterestAPi extends ChangeNotifier {
 
   Future<List<InterestModel>> getActivitiesInterestList() async {
     List<InterestModel> activitiesList = [];
-    String interestUrl = "http://10.0.2.2:8000/api/interests/";
+    String interestUrl = "http://10.0.2.2:8000/api/interests/ACT/";
     var response = await http.get(Uri.parse(interestUrl));
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       for (int i = 0; i < data.length; i++) {
         _interestModel = _interestModel.toMap(data[i]);
 
-        if (_interestModel.type == "ACT") {
-          activitiesList.add(_interestModel);
-        }
+        activitiesList.add(_interestModel);
       }
     }
     return activitiesList;
@@ -74,7 +68,8 @@ class InterestAPi extends ChangeNotifier {
 
     String? uid;
     uid = _getUserId(await storage.read(key: "jwt"));
-    final url = Uri.parse("http://10.0.2.2:8000/api/user/yatri/$uid/interest/");
+    final url =
+        Uri.parse("http://10.0.2.2:8000/api/user/yatri/$uid/interest/update/");
 
     var response = await http.patch(url,
         body: jsonEncode(
@@ -93,8 +88,7 @@ class InterestAPi extends ChangeNotifier {
 
     String? uid;
     uid = _getUserId(await storage.read(key: "jwt"));
-    final url =
-        Uri.parse("http://10.0.2.2:8000/api/user/yatri/$uid/interest/list/");
+    final url = Uri.parse("http://10.0.2.2:8000/api/user/yatri/$uid/interest/");
 
     var response = await http.get(url);
 

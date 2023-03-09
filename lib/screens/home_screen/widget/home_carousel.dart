@@ -4,20 +4,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/location/location_provider.dart';
+import 'package:yatra/models/food_model.dart';
 
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
 
 class HomeCarousel extends StatefulWidget {
-  final List imagePaths;
+  final String imagePaths;
   final double width;
   final double height;
+  final List<DataModel> dataModelList;
   const HomeCarousel(
       {super.key,
       required this.imagePaths,
       this.width = 160,
       this.scrollDirection = Axis.horizontal,
-      this.height = 215});
+      this.height = 215,
+      required this.dataModelList});
   final Axis scrollDirection;
 
   @override
@@ -35,18 +38,19 @@ class _HomeCarouselState extends State<HomeCarousel> {
       child: ListView.builder(
           shrinkWrap: true,
           scrollDirection: widget.scrollDirection,
-          itemCount: widget.imagePaths.length,
+          itemCount: widget.dataModelList.length,
           itemBuilder: ((context, index) {
             return GestureDetector(
               onTap: () {
                 int arguments = index;
                 Navigator.pushNamed(context, MyRoutes.detailedDescriptionRoute,
-                    arguments: {"index": index, "imgList": widget.imagePaths});
+                    arguments: widget.dataModelList[index]);
               },
               child: Cards(
+                dataModel: widget.dataModelList[index],
                 scrollDirection: widget.scrollDirection,
                 height: widget.height,
-                imagePath: widget.imagePaths[index],
+                imagePath: widget.imagePaths,
                 width: widget.width,
               ),
             );
@@ -61,11 +65,13 @@ class Cards extends StatelessWidget {
       required this.imagePath,
       required this.width,
       required this.height,
-      required this.scrollDirection});
+      required this.scrollDirection,
+      required this.dataModel});
   final String imagePath;
   final double width;
   final double height;
   final Axis scrollDirection;
+  final DataModel dataModel;
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +89,15 @@ class Cards extends StatelessWidget {
               width: width.w,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20.sp),
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.cover,
-                ),
+                child: dataModel.imageUrls!.isEmpty
+                    ? Image.asset(
+                        "assets/1.jpeg",
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        dataModel.imageUrls![0]["image"],
+                        fit: BoxFit.cover,
+                      ),
               ),
             ),
           ),
@@ -113,18 +124,17 @@ class Cards extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                  " Machapuchre",
-                  overflow: TextOverflow.ellipsis,
-                  style: scrollDirection != Axis.vertical
-                      ? Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(color: MyColor.whiteColor, fontSize: 15.sp)
-                      : Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(color: MyColor.whiteColor, fontSize: 18.sp),
+                SizedBox(
+                  width: scrollDirection != Axis.vertical ? 130.w : 290.w,
+                  child: Text(
+                    dataModel.name!,
+                    overflow: TextOverflow.ellipsis,
+                    style: scrollDirection != Axis.vertical
+                        ? Theme.of(context).textTheme.bodyText2!.copyWith(
+                            color: MyColor.whiteColor, fontSize: 15.sp)
+                        : Theme.of(context).textTheme.bodyText2!.copyWith(
+                            color: MyColor.whiteColor, fontSize: 18.sp),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -139,7 +149,7 @@ class Cards extends StatelessWidget {
                     SizedBox(
                       width: scrollDirection != Axis.vertical ? 100.w : 250.w,
                       child: Text(
-                        "${context.watch<ProviderMaps>().placemarks.last.locality} , ${context.watch<ProviderMaps>().placemarks.last.country}",
+                        dataModel.location!,
                         overflow: TextOverflow.ellipsis,
                         style: scrollDirection != Axis.vertical
                             ? Theme.of(context).textTheme.bodySmall!.copyWith(

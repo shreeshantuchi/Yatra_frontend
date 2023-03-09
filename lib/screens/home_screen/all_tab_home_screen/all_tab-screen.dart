@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:yatra/models/food_model.dart';
+import 'package:yatra/repository/food_api.dart';
 import 'package:yatra/screens/home_screen/home_screen.dart';
 import 'package:yatra/screens/home_screen/widget/home_tab_screen/home_tab_screen.dart';
 import 'package:yatra/utils/colors.dart';
@@ -13,6 +15,7 @@ class AllTab extends StatefulWidget {
 }
 
 class _AllTabState extends State<AllTab> {
+  FoodApi foodApi = FoodApi();
   final List<String> menuItems = ["All", "Destination", "Food", "Activities"];
   List<String> destinationImagePaths = [
     "assets/1.jpeg",
@@ -86,18 +89,38 @@ class _AllTabState extends State<AllTab> {
             },
             controller: pageController,
             children: [
-              HomeTab(
-                imagePaths: destinationImagePaths,
-              ),
-              HomeTab(
-                imagePaths: destinationImagePaths,
-              ),
-              HomeTab(
-                imagePaths: foodImagePaths,
-              ),
-              HomeTab(
-                imagePaths: activityImagePaths,
-              ),
+              FutureBuilder(
+                  future: foodApi.getFoodList(),
+                  builder: ((context, snapshot) {
+                    if (snapshot.data != null) {
+                      return HomeTab(
+                        dataModel: snapshot.data as List<DataModel>,
+                        imagePaths: foodImagePaths,
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  })),
+              FutureBuilder(builder: ((context, snapshot) {
+                if (snapshot.data != null) {
+                  return HomeTab(
+                    dataModel: snapshot.data as List<DataModel>,
+                    imagePaths: foodImagePaths,
+                  );
+                } else {
+                  return CircularProgressIndicator();
+                }
+              })),
+              FutureBuilder(builder: ((context, snapshot) {
+                if (snapshot.data != null) {
+                  return HomeTab(
+                    dataModel: snapshot.data as List<DataModel>,
+                    imagePaths: foodImagePaths,
+                  );
+                } else {
+                  return CircularProgressIndicator();
+                }
+              })),
             ],
           ),
         ),

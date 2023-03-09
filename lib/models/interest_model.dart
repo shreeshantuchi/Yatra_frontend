@@ -1,3 +1,5 @@
+import 'package:yatra/models/list_abstract_class.dart';
+
 class InterestModel {
   String? name;
   int? id;
