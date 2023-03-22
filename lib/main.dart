@@ -5,6 +5,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/constant.dart';
 import 'package:yatra/location/location_provider.dart';
+import 'package:yatra/repository/data_api.dart';
 import 'package:yatra/repository/interest_api.dart';
 import 'package:yatra/screens/detail_description_screen/detail_description_screen.dart';
 import 'package:yatra/screens/home_screen/home_screen.dart';
@@ -30,6 +31,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ProviderMaps()),
         ChangeNotifierProvider(create: (_) => InterestAPi()),
+        ChangeNotifierProvider(create: (_) => DataApi()),
       ],
       child: const MyApp(),
     ),

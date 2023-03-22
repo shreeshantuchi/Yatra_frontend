@@ -190,6 +190,12 @@ class CurrentLcoation extends StatefulWidget {
 
 class _CurrentLcoationState extends State<CurrentLcoation> {
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, MyRoutes.locationRoute),
@@ -209,7 +215,7 @@ class _CurrentLcoationState extends State<CurrentLcoation> {
                   return CircularProgressIndicator();
                 } else {
                   return Text(
-                      "${snapshot.data!.last.locality} , ${snapshot.data!.last.country}",
+                      "${snapshot.data!.last.street} , ${snapshot.data!.last.country}",
                       style: Theme.of(context).textTheme.bodyText1);
                 }
               })),

@@ -2,7 +2,11 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:yatra/location/location_provider.dart';
+import 'package:yatra/repository/data_api.dart';
 import 'package:yatra/screens/guide_screen/guide_screen.dart';
 import 'package:yatra/screens/home_screen/home_screen.dart';
 import 'package:yatra/screens/register_screen/register_screen.dart';
@@ -31,15 +35,36 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<DataApi>().getFoodList();
+    context.read<DataApi>().getDestinationList();
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        children: _pages,
-        onPageChanged: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+      body: Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            children: _pages,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 120.h, right: 20.w),
+              child: FloatingActionButton(
+                heroTag: "bt12",
+                backgroundColor: MyColor.redColor.withOpacity(0.7),
+                child: Text(
+                  "SOS",
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                onPressed: (() {}),
+              ),
+            ),
+          ),
+        ],
       ),
       extendBody: true,
       floatingActionButton: FloatingActionButton(
@@ -60,6 +85,7 @@ class _TabScreenState extends State<TabScreen> {
         notchSmoothness: NotchSmoothness.smoothEdge,
         leftCornerRadius: 32,
         rightCornerRadius: 0,
+
         onTap: (index) {
           setState(() {
             _currentIndex = index;

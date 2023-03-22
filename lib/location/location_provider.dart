@@ -24,7 +24,7 @@ class ProviderMaps with ChangeNotifier {
   Position? position;
   List<Placemark> placemarks = [];
   StreamController<List<Placemark>> controller =
-      StreamController<List<Placemark>>();
+      StreamController<List<Placemark>>.broadcast();
   StreamSubscription<Position>? positionStream;
 
   void onCreated(MapController controller) {
@@ -63,8 +63,6 @@ class ProviderMaps with ChangeNotifier {
     positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((event) async {
-      print("hello");
-      print(position);
       position = event;
       placemarks = await placemarkFromCoordinates(
           position!.latitude, position!.longitude);
@@ -165,8 +163,8 @@ class ProviderMaps with ChangeNotifier {
 
   @override
   void dispose() {
-    super.dispose();
     positionStream?.cancel();
     controller.close();
+    super.dispose();
   }
 }

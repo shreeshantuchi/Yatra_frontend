@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:yatra/constant.dart';
 import 'package:yatra/models/interest_model.dart';
+import 'package:yatra/repository/data_api.dart';
 import 'package:yatra/repository/interest_api.dart';
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
@@ -97,6 +99,8 @@ class _SelectPreferneceScreenState extends State<SelectPreferneceScreen> {
                     horizontalPadding: 100,
                     text: "Set",
                     onTap: () async {
+                      context.read<DataApi>().getFoodList();
+                      context.read<DataApi>().getDestinationList();
                       await interestAPi.updateInterest(
                           interestList: widget.interestSelected);
                       widget.push
