@@ -24,6 +24,7 @@ class DataApi extends ChangeNotifier {
   }
 
   void getFoodList() async {
+    print("in");
     foodList = [];
 
     final storage = const FlutterSecureStorage();
@@ -33,7 +34,7 @@ class DataApi extends ChangeNotifier {
     var response = await http.get(Uri.parse(interestUrl));
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      print(data);
+
       for (int i = 0; i < 5; i++) {
         _foodModel = _foodModel.toMap(data[i], "FOD");
 
@@ -41,8 +42,6 @@ class DataApi extends ChangeNotifier {
       }
     }
 
-    print("food model");
-    print(foodList[0].name);
     notifyListeners();
   }
 
@@ -62,7 +61,6 @@ class DataApi extends ChangeNotifier {
       }
     }
 
-    print(destinationList);
     notifyListeners();
   }
 }

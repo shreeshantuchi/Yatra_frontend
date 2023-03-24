@@ -16,7 +16,9 @@ class AllTab extends StatefulWidget {
 }
 
 class _AllTabState extends State<AllTab> {
-  DataApi dataApi = DataApi();
+  @override
+  void initState() {}
+
   final List<String> menuItems = ["All", "Destination", "Food", "Activities"];
   List<String> destinationImagePaths = [
     "assets/1.jpeg",
@@ -123,11 +125,12 @@ class _AllTabState extends State<AllTab> {
               //       }
               //     })),
               HomeTab(
-                  imagePaths: foodImagePaths,
-                  dataModel: context.watch<DataApi>().destinationList),
+                imagePaths: foodImagePaths,
+                dataModel: context.watch<DataApi>().destinationList,
+              ),
               HomeTab(
                   imagePaths: foodImagePaths,
-                  dataModel: context.watch<DataApi>().foodList),
+                  dataModel: context.watch<DataApi>().destinationList),
 
               HomeTab(
                   imagePaths: foodImagePaths,

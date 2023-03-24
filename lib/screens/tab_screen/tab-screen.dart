@@ -2,15 +2,19 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/location/location_provider.dart';
 import 'package:yatra/repository/data_api.dart';
 import 'package:yatra/screens/guide_screen/guide_screen.dart';
 import 'package:yatra/screens/home_screen/home_screen.dart';
+import 'package:yatra/screens/location_scree/location_screen.dart';
 import 'package:yatra/screens/register_screen/register_screen.dart';
 import 'package:yatra/screens/home_screen/all_tab_home_screen/all_tab-screen.dart';
+import 'package:yatra/services/auth_services.dart';
 import 'package:yatra/utils/colors.dart';
 import 'package:yatra/utils/routes.dart';
 
@@ -32,11 +36,17 @@ class _TabScreenState extends State<TabScreen> {
     const RegisterScreen(),
     const GuidScreen(),
   ];
+  @override
+  void initState() {
+    print("hello world");
+    context.read<DataApi>().getFoodList();
+    context.read<DataApi>().getDestinationList();
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    context.read<DataApi>().getFoodList();
-    context.read<DataApi>().getDestinationList();
     return Scaffold(
       body: Stack(
         children: [
@@ -60,19 +70,84 @@ class _TabScreenState extends State<TabScreen> {
                   "SOS",
                   style: Theme.of(context).textTheme.bodyText2,
                 ),
-                onPressed: (() {}),
+                onPressed: (() async {
+                  await FlutterPhoneDirectCaller.callNumber("9869101424");
+                }),
               ),
             ),
           ),
         ],
       ),
       extendBody: true,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: MyColor.redColor,
-        child: const Icon(PhosphorIcons.mapPinBold),
-        onPressed: () {
-          Navigator.pushNamed(context, MyRoutes.locationRoute);
-        },
+      floatingActionButton: FutureBuilder(
+        future: context.read<AuthProvider>().getProfile(),
+        builder: ((context, snapshot) {
+          if (snapshot.data != null) {
+            String profileUrl = snapshot.data!.profileImage!;
+            return StreamBuilder(
+                initialData: context.read<ProviderMaps>().position,
+                stream: context.read<ProviderMaps>().listenToLocationChange(),
+                builder: (context, snapshot) {
+                  context.read<ProviderMaps>().cleanpoint();
+                  context.read<ProviderMaps>().addMarker(
+                      LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
+                      profileUrl);
+                  // context.read<ProviderMaps>().addMarker(
+                  //     LatLng(double.parse(dataModel.latitude!),
+                  //         double.parse(dataModel.longitude!)),
+                  //     destinationUrl);
+
+                  return FloatingActionButton(
+                      backgroundColor: MyColor.redColor,
+                      child: const Icon(PhosphorIcons.mapPinBold),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20.0.sp),
+                                topRight: Radius.circular(20.0.sp),
+                              ),
+                            ),
+                            context: context,
+                            builder: (BuildContext context) {
+                              return StreamBuilder(
+                                  initialData:
+                                      context.read<ProviderMaps>().position,
+                                  stream: context
+                                      .read<ProviderMaps>()
+                                      .listenToLocationChange(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.data == null) {
+                                      return CircularProgressIndicator();
+                                    } else {
+                                      context.read<ProviderMaps>().cleanpoint();
+                                      context.read<ProviderMaps>().addMarker(
+                                          LatLng(snapshot.data!.latitude,
+                                              snapshot.data!.longitude),
+                                          profileUrl);
+
+                                      // context.read<ProviderMaps>().addMarker(
+                                      //     LatLng(double.parse(dataModel.latitude!),
+                                      //         double.parse(dataModel.longitude!)),
+                                      //     destinationUrl);
+
+                                      return Container(
+                                        height: 800.h,
+                                        child: LocationScreen(
+                                            initialPosition: LatLng(
+                                                snapshot.data!.latitude,
+                                                snapshot.data!.longitude)),
+                                      );
+                                    }
+                                  });
+                            });
+                      });
+                });
+          }
+
+          return const SizedBox();
+        }),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(

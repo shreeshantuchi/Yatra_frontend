@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:yatra/location/location_provider.dart';
@@ -189,6 +192,7 @@ class CurrentLcoation extends StatefulWidget {
 }
 
 class _CurrentLcoationState extends State<CurrentLcoation> {
+  final storage = const FlutterSecureStorage();
   @override
   void dispose() {
     // TODO: implement dispose
@@ -208,17 +212,30 @@ class _CurrentLcoationState extends State<CurrentLcoation> {
           SizedBox(
             width: 5.w,
           ),
-          StreamBuilder(
-              stream: context.read<ProviderMaps>().listenToPlacemarkChange(),
-              builder: ((context, snapshot) {
-                if (snapshot.data == null) {
-                  return CircularProgressIndicator();
+          FutureBuilder<List<Placemark>>(
+              future: context.read<ProviderMaps>().determinePlacemark(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return StreamBuilder(
+                      initialData: snapshot.data,
+                      stream: context
+                          .read<ProviderMaps>()
+                          .listenToPlacemarkChange(context),
+                      builder: ((context, snapshot) {
+                        if (snapshot.data == null) {
+                          return CircularProgressIndicator();
+                        } else {
+                          return Text(
+                              "${snapshot.data!.last.subAdministrativeArea} , ${snapshot.data!.last.country}",
+                              style: Theme.of(context).textTheme.bodyText1);
+                        }
+                      }));
                 } else {
-                  return Text(
-                      "${snapshot.data!.last.street} , ${snapshot.data!.last.country}",
-                      style: Theme.of(context).textTheme.bodyText1);
+                  return SizedBox(
+                      height: 20.sp, child: CircularProgressIndicator());
+                  
                 }
-              })),
+              }),
         ],
       ),
     );

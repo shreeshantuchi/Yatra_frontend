@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -32,6 +34,27 @@ class _DetailDscriptionScreenState extends State<DetailDscriptionScreen> {
 
     return customBackground(
       child: Scaffold(
+          floatingActionButton: dataModel.phoneNumber != null
+              ? FloatingActionButton(
+                  onPressed: () async {
+                    String number = dataModel.phoneNumber!
+                        .substring(0, dataModel.phoneNumber!.length - 1);
+                    if (number[0] == "1") {
+                      number = "0$number";
+                    }
+                    Uri launchUri = Uri(
+                      scheme: 'tel',
+                      path: number,
+                    );
+                    launchUrl(launchUri);
+                  },
+                  backgroundColor: MyColor.redColor.withOpacity(0.8),
+                  child: Icon(
+                    PhosphorIcons.phoneCallBold,
+                    color: Colors.white,
+                  ),
+                )
+              : null,
           backgroundColor: Colors.transparent,
           appBar: AppBar(backgroundColor: Colors.transparent),
           body: Column(
@@ -70,9 +93,13 @@ class _DetailDscriptionScreenState extends State<DetailDscriptionScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          dataModel.name!,
-          style: Theme.of(context).textTheme.headline3,
+        SizedBox(
+          width: 300.w,
+          child: Text(
+            dataModel.name!,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.headline3,
+          ),
         ),
         IconButton(
             onPressed: () {},
@@ -128,7 +155,7 @@ class _DetailDscriptionScreenState extends State<DetailDscriptionScreen> {
     String originalString = dataModel.location!;
     List<String> words = originalString.split(",");
     String newlocationString = words.join("\n");
-    print(newlocationString);
+
     return GestureDetector(
       onTap: () async {
         showModalBottomSheet(

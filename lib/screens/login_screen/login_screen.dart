@@ -135,12 +135,9 @@ class LoginScreen extends StatelessWidget {
                                 password: passwordController.text);
 
                             if (jwt != null) {
-                              print("in");
                               Navigator.pushReplacementNamed(
                                   context, MyRoutes.tabRoute);
-                            } else {
-                              print("error");
-                            }
+                            } else {}
 
                             // Form is valid, process data.
                           }
@@ -182,9 +179,7 @@ class LoginScreen extends StatelessWidget {
 
                           if (jwt != null) {
                             Navigator.pushNamed(context, MyRoutes.homeRoute);
-                          } else {
-                            print("error");
-                          }
+                          } else {}
                         }),
                     SizedBox(
                       height: 48.h,

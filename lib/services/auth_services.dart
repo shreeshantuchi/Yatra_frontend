@@ -31,9 +31,7 @@ class AuthProvider extends ChangeNotifier {
         return response.body;
       }
       return null;
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
 
     notifyListeners();
     return null;
@@ -59,9 +57,7 @@ class AuthProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         userProfile = userProfile.toMap(data);
-      } else {
-        print("error");
-      }
+      } else {}
 
       return userProfile;
     }
@@ -69,13 +65,15 @@ class AuthProvider extends ChangeNotifier {
     return userProfile;
   }
 
-  Future<void> updateUserProfile(
-      {File? imageFile,
-      String? firstName,
-      String? lastName,
-      String? phoneNumber,
-      String? country}) async {
-    print(country);
+  Future<void> updateUserProfile({
+    File? imageFile,
+    String? firstName,
+    String? lastName,
+    String? phoneNumber,
+    String? country,
+    String? latitude,
+    String? longitude,
+  }) async {
     String? uid;
     uid = _getUserId(await storage.read(key: "jwt"));
     final url = Uri.parse("http://10.0.2.2:8000/api/user/yatri/$uid/");
@@ -88,8 +86,9 @@ class AuthProvider extends ChangeNotifier {
       request.fields['last_name'] = lastName;
     }
     // // You
-    if (phoneNumber != null) {
-      request.fields['phone_no'] = phoneNumber;
+
+    if (latitude != null) {
+      request.fields['latitude'] = latitude;
     }
     // // You
     // if (country != null) {
@@ -97,17 +96,35 @@ class AuthProvider extends ChangeNotifier {
     // }
 
     if (imageFile != null) {
-      print("hello" + imageFile.toString());
       request.files.add(
           await http.MultipartFile.fromPath('profile_image', imageFile.path));
     }
 
     final response = await request.send();
     if (response.statusCode == 200) {
-      print('Image uploaded successfully!');
-    } else {
-      print(response);
+    } else {}
+    notifyListeners();
+  }
+
+  Future<void> updateUserLocation({
+    String? latitude,
+    String? longitude,
+  }) async {
+    String? uid;
+    uid = _getUserId(await storage.read(key: "jwt"));
+    final url = Uri.parse("http://10.0.2.2:8000/api/user/yatri/$uid/");
+    final request = http.MultipartRequest('PATCH', url);
+
+    if (longitude != null) {
+      request.fields['longitude'] = longitude;
     }
+    if (latitude != null) {
+      request.fields['latitude'] = latitude;
+    }
+
+    final response = await request.send();
+    if (response.statusCode == 200) {
+    } else {}
     notifyListeners();
   }
 
@@ -134,8 +151,7 @@ class AuthProvider extends ChangeNotifier {
       await storage.write(key: "jwt", value: jwtToken.accessToken);
       return response.body;
     } else
-      print("error");
-    return null;
+      return null;
   }
 }
 

@@ -14,21 +14,25 @@ class DataModel {
   String? type;
 
   DataModel toMap(Map<String, dynamic> mapData, String type) {
-    DataModel food = DataModel();
+    DataModel data = DataModel();
 
-    food.name = mapData["name"];
-    food.description = mapData["description"];
+    data.name = mapData["name"];
+    data.description = mapData["description"];
     if (type == "FOD") {
-      food.phoneNumber = mapData["phone_no"];
+      data.phoneNumber = mapData["phone_no"];
     }
 
-    food.location = mapData["location"];
-    food.averagePrice = mapData["average_price"];
-    food.rating = mapData["related_keywords"];
-    food.longitude = mapData["longitude"];
-    food.latitude = mapData["latitude"];
-    food.imageUrls = mapData["images"];
+    data.location = mapData["location"];
+    data.averagePrice = mapData["average_price"];
+    data.rating = mapData["related_keywords"];
+    data.longitude = mapData["longitude"];
+    data.latitude = mapData["latitude"];
+    data.imageUrls = mapData["images"];
+    if (mapData["phone_no"] != null) {
+      data.phoneNumber = mapData["phone_no"];
+      print(phoneNumber);
+    }
 
-    return food;
+    return data;
   }
 }

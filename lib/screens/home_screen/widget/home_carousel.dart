@@ -81,7 +81,7 @@ class Cards extends StatelessWidget {
         alignment: AlignmentDirectional.bottomStart,
         children: [
           Material(
-            color: Colors.redAccent,
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(20.sp),
             elevation: 4,
             child: SizedBox(

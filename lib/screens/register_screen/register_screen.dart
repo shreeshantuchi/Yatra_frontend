@@ -133,8 +133,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return "Password should be minimum of 8 characters";
                         }
                         if (value != _password) {
-                          print(value);
-                          print(_password);
                           return "Password doesnt match";
                         }
                       }),
@@ -179,13 +177,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     repassword: _password2Controller.text);
 
                             if (jwt != null) {
-                              print("in");
                               Navigator.pushNamedAndRemoveUntil(context,
                                   MyRoutes.updateProfileRoute, (route) => false,
                                   arguments: true);
-                            } else {
-                              print("error");
-                            }
+                            } else {}
 
                             // Form is valid, process data.
                           }

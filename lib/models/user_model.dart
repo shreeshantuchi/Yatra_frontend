@@ -7,7 +7,7 @@ class UserProfile {
 
   UserProfile toMap(Map<String, dynamic> mapData) {
     UserProfile user = UserProfile();
-    print(mapData);
+
     user.phoneNumber = mapData["phone_no"];
     user.firstName = mapData["first_name"];
     user.lastName = mapData["last_name"];

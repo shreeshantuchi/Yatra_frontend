@@ -2,15 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 import 'package:yatra/repository/api.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:yatra/repository/data_api.dart';
+import 'package:yatra/services/auth_services.dart';
 import 'dart:math' show cos, sqrt, asin;
 import 'package:yatra/utils/colors.dart';
 
 class ProviderMaps with ChangeNotifier {
+  final storage = const FlutterSecureStorage();
   LatLng? initialposition;
   LatLng? _finalposition;
   late MapController _mapController;
@@ -33,13 +38,14 @@ class ProviderMaps with ChangeNotifier {
   }
 
   void checkLocationPermission() async {
-    position = await determinePosition();
     LocationPermission permission;
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         return Future.error('Location permissions are denied');
+      } else {
+        position = await determinePosition();
       }
     }
   }
@@ -47,23 +53,29 @@ class ProviderMaps with ChangeNotifier {
   Stream<Position> listenToLocationChange() {
     const LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.bestForNavigation,
-      timeLimit: Duration(microseconds: 1),
+      timeLimit: Duration(seconds: 1),
     );
 
     return Geolocator.getPositionStream(locationSettings: locationSettings);
   }
 
-  Stream<List<Placemark>> listenToPlacemarkChange() {
+  Stream<List<Placemark>> listenToPlacemarkChange(BuildContext context) {
     Stream<List<Placemark>> stream = controller.stream;
     const LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.bestForNavigation,
         timeLimit: Duration(hours: 1),
-        distanceFilter: 10);
+        distanceFilter: 1);
 
     positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((event) async {
       position = event;
+      await context.read<AuthProvider>().updateUserLocation(
+          latitude: position!.latitude.toString(),
+          longitude: position!.longitude.toString());
+      await storage.write(key: "lastLocation", value: position!.toString());
+      context.read<DataApi>().getFoodList();
+      context.read<DataApi>().getDestinationList();
       placemarks = await placemarkFromCoordinates(
           position!.latitude, position!.longitude);
       controller.add(placemarks);
@@ -77,6 +89,14 @@ class ProviderMaps with ChangeNotifier {
     initialposition = LatLng(position!.latitude, position!.longitude);
     notifyListeners();
     return position;
+  }
+
+  Future<List<Placemark>> determinePlacemark() async {
+    position = await Geolocator.getCurrentPosition();
+
+    placemarks =
+        await placemarkFromCoordinates(position!.latitude, position!.longitude);
+    return placemarks;
   }
 
   String calculatedistance(double lat1, double lon1, double lat2, double lon2) {
@@ -134,7 +154,7 @@ class ProviderMaps with ChangeNotifier {
         _finalposition = markers.elementAt(i).point;
       }
     }
-    print(_finalposition);
+
     List<LatLng>? polylines = await Api().getpoints(
         initialposition!.longitude.toString(),
         initialposition!.latitude.toString(),

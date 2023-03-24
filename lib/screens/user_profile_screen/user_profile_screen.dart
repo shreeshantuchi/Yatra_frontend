@@ -69,7 +69,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           future: context.watch<AuthProvider>().getProfile(),
           builder: ((context, snapshot) {
             if (snapshot.data != null) {
-              print("world");
               return Text(
                 "${snapshot.data?.firstName}  ${snapshot.data!.lastName}",
                 style: Theme.of(context)

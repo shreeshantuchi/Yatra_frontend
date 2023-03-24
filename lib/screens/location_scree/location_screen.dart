@@ -24,55 +24,48 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(context.watch<ProviderMaps>().initialposition);
-    return context.watch<ProviderMaps>().initialposition == null
-        ? const CircularProgressIndicator()
-        : Container(
-            child: Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                Positioned(
-                  top: 0,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0.sp),
-                      topRight: Radius.circular(20.0.sp),
-                    ),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: FlutterMap(
-                        options: MapOptions(
-                          center: context.watch<ProviderMaps>().initialposition,
-                          zoom: 16,
-                        ),
-                        nonRotatedChildren: [
-                          AttributionWidget.defaultWidget(
-                            source: 'OpenStreetMap contributors',
-                            onSourceTapped: null,
-                          ),
-                        ],
-                        children: [
-                          TileLayer(
-                            urlTemplate:
-                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            userAgentPackageName: 'com.example.app',
-                          ),
-                          MarkerLayer(
-                            markers:
-                                context.watch<ProviderMaps>().markers.toList(),
-                          ),
-                          PolylineLayer(
-                            polylines:
-                                context.watch<ProviderMaps>().polyline.toList(),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Positioned(
+          top: 0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0.sp),
+              topRight: Radius.circular(20.0.sp),
             ),
-          );
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: FlutterMap(
+                options: MapOptions(
+                  center: widget.initialPosition,
+                  zoom: 16,
+                ),
+                nonRotatedChildren: [
+                  AttributionWidget.defaultWidget(
+                    source: 'OpenStreetMap contributors',
+                    onSourceTapped: null,
+                  ),
+                ],
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.example.app',
+                  ),
+                  MarkerLayer(
+                    markers: context.watch<ProviderMaps>().markers.toList(),
+                  ),
+                  PolylineLayer(
+                    polylines: context.watch<ProviderMaps>().polyline.toList(),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

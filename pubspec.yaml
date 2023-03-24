@@ -52,7 +52,9 @@ dependencies:
   animated_bottom_navigation_bar: ^1.1.0+1
   country_picker: ^2.0.19
   image_picker: ^0.8.6+4
-
+  url_launcher: ^6.1.10
+  flutter_phone_direct_caller: ^2.1.1
+  shimmer: ^2.0.0 
 
 
 
