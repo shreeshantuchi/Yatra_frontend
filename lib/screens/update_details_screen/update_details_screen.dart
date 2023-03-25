@@ -167,7 +167,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     userProfile = await context.read<AuthProvider>().getProfile();
     if (userProfile!.firstName != null) {
       _firstNameController.text = userProfile!.firstName!;
-      _lastNameController.text = userProfile!.lastName!;
+    }
+    if (userProfile!.lastName != null) {
+      _firstNameController.text = userProfile!.lastName!;
+    }
+    if (userProfile!.phoneNumber != null) {
       _phoneNumberController.text = userProfile!.phoneNumber!;
     }
   }

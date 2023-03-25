@@ -39,7 +39,7 @@ class DataApi extends ChangeNotifier {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
 
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < data.length; i++) {
         _destinationModel = _destinationModel.toMap(data[i], "DES");
         destinationListPopular.add(_destinationModel);
 
@@ -66,7 +66,7 @@ class DataApi extends ChangeNotifier {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
 
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < data.length; i++) {
         _foodModel = _foodModel.toMap(data[i], "FOD");
         foodListPopular.add(_foodModel);
 
@@ -94,7 +94,7 @@ class DataApi extends ChangeNotifier {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
 
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < data.length; i++) {
         _foodModel = _foodModel.toMap(data[i], "FOD");
         foodList.add(_foodModel);
 
@@ -119,7 +119,7 @@ class DataApi extends ChangeNotifier {
     var response = await http.get(Uri.parse(interestUrl));
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < data.length; i++) {
         _destinationModel = _destinationModel.toMap(data[i], "DES");
 
         destinationList.add(_destinationModel);

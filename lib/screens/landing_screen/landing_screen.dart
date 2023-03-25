@@ -53,7 +53,8 @@ class LandingScreen extends StatelessWidget {
                       CustomButton(
                         text: "Sign Up",
                         onTap: () {
-                          Navigator.pushNamed(context, MyRoutes.registerRoute);
+                          Navigator.pushNamed(
+                              context, MyRoutes.selectUserRoute);
                         },
                         radius: 10,
                         color: Colors.transparent,

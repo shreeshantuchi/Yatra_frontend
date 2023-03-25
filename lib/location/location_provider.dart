@@ -71,6 +71,7 @@ class ProviderMaps with ChangeNotifier {
     positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((event) async {
+      print(event);
       position = event;
       await context.read<AuthProvider>().updateUserLocation(
           latitude: position!.latitude.toString(),

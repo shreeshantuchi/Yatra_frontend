@@ -132,7 +132,9 @@ class _DetailDscriptionScreenState extends State<DetailDscriptionScreen> {
             if (snapshot.data != null) {
               return locationCard(
                 dataModel: dataModel,
-                profileUrl: snapshot.data!.profileImage!,
+                profileUrl: snapshot.data!.profileImage == null
+                    ? "https://thumbs.dreamstime.com/z/add-user-icon-vector-people-new-profile-person-illustration-business-group-symbol-male-195160356.jpg"
+                    : snapshot.data!.profileImage!,
                 destinationUrl: dataModel.imageUrls!.isEmpty
                     ? "https://alphapartners.lv/wp-content/themes/consultix/images/no-image-found-360x260.png"
                     : dataModel.imageUrls?[0]["image"],

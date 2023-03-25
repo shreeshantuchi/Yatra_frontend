@@ -139,7 +139,7 @@ class _AllTabState extends State<AllTab> {
               HomeTab(
                   imagePaths: foodImagePaths,
                   dataModel: context.watch<DataApi>().foodList,
-                  dataModelPopular: context.watch<DataApi>().foodList),
+                  dataModelPopular: context.watch<DataApi>().foodListPopular),
             ],
           ),
         ),

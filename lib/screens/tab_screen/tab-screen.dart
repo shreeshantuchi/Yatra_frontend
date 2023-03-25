@@ -87,7 +87,9 @@ class _TabScreenState extends State<TabScreen> {
         future: context.read<AuthProvider>().getProfile(),
         builder: ((context, snapshot) {
           if (snapshot.data != null) {
-            String profileUrl = snapshot.data!.profileImage!;
+            String profileUrl = snapshot.data!.profileImage == null
+                ? "https://thumbs.dreamstime.com/z/add-user-icon-vector-people-new-profile-person-illustration-business-group-symbol-male-195160356.jpg"
+                : snapshot.data!.profileImage!;
             return FloatingActionButton(
                 backgroundColor: MyColor.redColor,
                 child: const Icon(PhosphorIcons.mapPinBold),

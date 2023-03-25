@@ -10,4 +10,5 @@ class MyRoutes {
   static const String detailedDescriptionRoute = '/detailedDescription';
   static const String updateProfileRoute = '/updateProfileRoute';
   static const String selectPreferenceRoute = '/selectPreferenceRoute';
+  static const String selectUserRoute = '/selectUserRoute';
 }

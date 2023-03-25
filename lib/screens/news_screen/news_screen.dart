@@ -29,7 +29,10 @@ class _NewsScreenState extends State<NewsScreen> {
             children: [
               Text(
                 "News",
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1!
+                    .copyWith(color: Colors.white),
               ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.80,

@@ -9,6 +9,7 @@ import 'package:yatra/models/food_model.dart';
 import 'package:yatra/repository/data_api.dart';
 import 'package:yatra/screens/home_screen/widget/home_carousel.dart';
 import 'package:yatra/screens/home_screen/widget/home_carousel_shmmer.dart';
+import 'package:yatra/screens/sell_allscreen/see_all_screen.dart';
 import 'package:yatra/utils/colors.dart';
 
 class HomeTab extends StatefulWidget {
@@ -39,12 +40,21 @@ class _HomeTabState extends State<HomeTab> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Popular", style: Theme.of(context).textTheme.headline3),
-                  Text(
-                    "See all",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: MyColor.greyColor, fontSize: 18.sp),
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SeeAllScreen(
+                                  title: "Popular",
+                                  dataModel: widget.dataModelPopular,
+                                ))),
+                    child: Text(
+                      "See all",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline3!
+                          .copyWith(color: MyColor.greyColor, fontSize: 18.sp),
+                    ),
                   ),
                 ],
               ),
@@ -61,10 +71,22 @@ class _HomeTabState extends State<HomeTab> {
                         style: Theme.of(context).textTheme.headline3),
                     GestureDetector(
                       onTap: () async {},
-                      child: Text(
-                        "See all",
-                        style: Theme.of(context).textTheme.headline3!.copyWith(
-                            color: MyColor.greyColor, fontSize: 18.sp),
+                      child: GestureDetector(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SeeAllScreen(
+                                      title: "Perfect for You",
+                                      dataModel: widget.dataModel,
+                                    ))),
+                        child: Text(
+                          "See all",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline3!
+                              .copyWith(
+                                  color: MyColor.greyColor, fontSize: 18.sp),
+                        ),
                       ),
                     ),
                   ],

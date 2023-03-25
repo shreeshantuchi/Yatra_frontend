@@ -102,7 +102,7 @@ class LoginScreen extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: (() => Navigator.pushNamed(
-                              context, MyRoutes.registerRoute)),
+                              context, MyRoutes.selectUserRoute)),
                           child: Text(
                             "Don't have an account? \nRegister",
                             style: Theme.of(context)
