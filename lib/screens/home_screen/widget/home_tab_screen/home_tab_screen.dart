@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:yatra/location/location_provider.dart';
 import 'package:yatra/models/food_model.dart';
 import 'package:yatra/repository/data_api.dart';
 import 'package:yatra/screens/home_screen/widget/home_carousel.dart';
@@ -12,7 +14,12 @@ import 'package:yatra/utils/colors.dart';
 class HomeTab extends StatefulWidget {
   final List<String> imagePaths;
   final List<DataModel> dataModel;
-  const HomeTab({super.key, required this.imagePaths, required this.dataModel});
+  final List<DataModel> dataModelPopular;
+  const HomeTab(
+      {super.key,
+      required this.imagePaths,
+      required this.dataModel,
+      required this.dataModelPopular});
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -21,7 +28,7 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
-    if (widget.dataModel.isNotEmpty) {
+    if (widget.dataModel.isNotEmpty && widget.dataModelPopular.isNotEmpty) {
       return Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(
@@ -43,7 +50,7 @@ class _HomeTabState extends State<HomeTab> {
               ),
               HomeCarousel(
                 imagePaths: "",
-                dataModelList: widget.dataModel,
+                dataModelList: widget.dataModelPopular,
               ),
               Padding(
                 padding: EdgeInsets.only(top: 30.h, bottom: 20.h),

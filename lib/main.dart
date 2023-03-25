@@ -7,6 +7,7 @@ import 'package:yatra/constant.dart';
 import 'package:yatra/location/location_provider.dart';
 import 'package:yatra/repository/data_api.dart';
 import 'package:yatra/repository/interest_api.dart';
+import 'package:yatra/repository/news_api.dart';
 import 'package:yatra/screens/detail_description_screen/detail_description_screen.dart';
 import 'package:yatra/screens/home_screen/home_screen.dart';
 import 'package:yatra/screens/landing_screen/landing_screen.dart';
@@ -32,6 +33,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ProviderMaps()),
         ChangeNotifierProvider(create: (_) => InterestAPi()),
         ChangeNotifierProvider(create: (_) => DataApi()),
+        ChangeNotifierProvider(create: (_) => NewsApi()),
       ],
       child: const MyApp(),
     ),

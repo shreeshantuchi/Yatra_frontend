@@ -8,10 +8,12 @@ import 'package:latlong2/latlong.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/location/location_provider.dart';
+import 'package:yatra/models/food_model.dart';
 import 'package:yatra/repository/data_api.dart';
 import 'package:yatra/screens/guide_screen/guide_screen.dart';
 import 'package:yatra/screens/home_screen/home_screen.dart';
 import 'package:yatra/screens/location_scree/location_screen.dart';
+import 'package:yatra/screens/news_screen/news_screen.dart';
 import 'package:yatra/screens/register_screen/register_screen.dart';
 import 'package:yatra/screens/home_screen/all_tab_home_screen/all_tab-screen.dart';
 import 'package:yatra/services/auth_services.dart';
@@ -26,21 +28,22 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
-  List<IconData> iconList = [Icons.home, Icons.feed, Icons.person, Icons.abc];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<IconData> iconList = [Icons.home, Icons.feed, Icons.person];
 
   int _currentIndex = 0;
   final PageController _pageController = PageController();
 
   final List<Widget> _pages = [
     HomeScreen(),
-    const RegisterScreen(),
+    const NewsScreen(),
     const GuidScreen(),
   ];
+
   @override
   void initState() {
-    print("hello world");
-    context.read<DataApi>().getFoodList();
-    context.read<DataApi>().getDestinationList();
+    context.read<DataApi>().getFoodList(context);
+    context.read<DataApi>().getDestinationList(context);
     // TODO: implement initState
     super.initState();
   }
@@ -48,6 +51,7 @@ class _TabScreenState extends State<TabScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: Stack(
         children: [
           PageView(
@@ -84,63 +88,43 @@ class _TabScreenState extends State<TabScreen> {
         builder: ((context, snapshot) {
           if (snapshot.data != null) {
             String profileUrl = snapshot.data!.profileImage!;
-            return StreamBuilder(
-                initialData: context.read<ProviderMaps>().position,
-                stream: context.read<ProviderMaps>().listenToLocationChange(),
-                builder: (context, snapshot) {
-                  context.read<ProviderMaps>().cleanpoint();
-                  context.read<ProviderMaps>().addMarker(
-                      LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
-                      profileUrl);
-                  // context.read<ProviderMaps>().addMarker(
-                  //     LatLng(double.parse(dataModel.latitude!),
-                  //         double.parse(dataModel.longitude!)),
-                  //     destinationUrl);
+            return FloatingActionButton(
+                backgroundColor: MyColor.redColor,
+                child: const Icon(PhosphorIcons.mapPinBold),
+                onPressed: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0.sp),
+                          topRight: Radius.circular(20.0.sp),
+                        ),
+                      ),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return StreamBuilder(
+                            initialData: context.read<ProviderMaps>().position,
+                            stream: context
+                                .read<ProviderMaps>()
+                                .listenToLocationChange(),
+                            builder: (context, snapshot) {
+                              if (snapshot.data == null) {
+                                return CircularProgressIndicator();
+                              } else {
+                                context.read<ProviderMaps>().cleanpoint();
+                                context.read<ProviderMaps>().addMarker(
+                                    LatLng(snapshot.data!.latitude,
+                                        snapshot.data!.longitude),
+                                    profileUrl);
 
-                  return FloatingActionButton(
-                      backgroundColor: MyColor.redColor,
-                      child: const Icon(PhosphorIcons.mapPinBold),
-                      onPressed: () {
-                        showModalBottomSheet(
-                            isScrollControlled: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20.0.sp),
-                                topRight: Radius.circular(20.0.sp),
-                              ),
-                            ),
-                            context: context,
-                            builder: (BuildContext context) {
-                              return StreamBuilder(
-                                  initialData:
-                                      context.read<ProviderMaps>().position,
-                                  stream: context
-                                      .read<ProviderMaps>()
-                                      .listenToLocationChange(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.data == null) {
-                                      return CircularProgressIndicator();
-                                    } else {
-                                      context.read<ProviderMaps>().cleanpoint();
-                                      context.read<ProviderMaps>().addMarker(
-                                          LatLng(snapshot.data!.latitude,
-                                              snapshot.data!.longitude),
-                                          profileUrl);
-
-                                      // context.read<ProviderMaps>().addMarker(
-                                      //     LatLng(double.parse(dataModel.latitude!),
-                                      //         double.parse(dataModel.longitude!)),
-                                      //     destinationUrl);
-
-                                      return Container(
-                                        height: 800.h,
-                                        child: LocationScreen(
-                                            initialPosition: LatLng(
-                                                snapshot.data!.latitude,
-                                                snapshot.data!.longitude)),
-                                      );
-                                    }
-                                  });
+                                return Container(
+                                  height: 800.h,
+                                  child: LocationScreen(
+                                      initialPosition: LatLng(
+                                          snapshot.data!.latitude,
+                                          snapshot.data!.longitude)),
+                                );
+                              }
                             });
                       });
                 });

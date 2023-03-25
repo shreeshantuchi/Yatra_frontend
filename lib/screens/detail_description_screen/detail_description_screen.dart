@@ -79,8 +79,7 @@ class _DetailDscriptionScreenState extends State<DetailDscriptionScreen> {
                       height: 30.h,
                     ),
                     descriptionText(
-                        description:
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+                        description: dataModel.description.toString()),
                   ],
                 ),
               )
@@ -134,7 +133,9 @@ class _DetailDscriptionScreenState extends State<DetailDscriptionScreen> {
               return locationCard(
                 dataModel: dataModel,
                 profileUrl: snapshot.data!.profileImage!,
-                destinationUrl: dataModel.imageUrls?[0]["image"],
+                destinationUrl: dataModel.imageUrls!.isEmpty
+                    ? "https://alphapartners.lv/wp-content/themes/consultix/images/no-image-found-360x260.png"
+                    : dataModel.imageUrls?[0]["image"],
               );
             }
 
@@ -303,14 +304,16 @@ class _ImageSliderState extends State<ImageSlider> {
             },
             controller: _pageController,
             scrollDirection: Axis.horizontal,
-            itemCount: widget.i,
+            itemCount: widget.i == 0 ? 1 : widget.i,
             itemBuilder: ((context, index) => Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20.sp),
                       child: Image.network(
-                        widget.imgList![index]["image"],
+                        widget.imgList!.isEmpty
+                            ? "https://alphapartners.lv/wp-content/themes/consultix/images/no-image-found-360x260.png"
+                            : widget.imgList![index]["image"],
                         fit: BoxFit.cover,
                       ),
                     ),

@@ -37,30 +37,34 @@ class _LocationScreenState extends State<LocationScreen> {
             child: Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              child: FlutterMap(
-                options: MapOptions(
-                  center: widget.initialPosition,
-                  zoom: 16,
+              child: GestureDetector(
+                child: FlutterMap(
+                  options: MapOptions(
+                    center: widget.initialPosition,
+                    zoom: 16,
+                  ),
+                  nonRotatedChildren: [
+                    AttributionWidget.defaultWidget(
+                      source: 'OpenStreetMap contributors',
+                      onSourceTapped: null,
+                    ),
+                  ],
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.example.app',
+                    ),
+                    MarkerLayer(
+                      markers: context.watch<ProviderMaps>().markers.toList() +
+                          context.watch<ProviderMaps>().markers2.toList(),
+                    ),
+                    PolylineLayer(
+                      polylines:
+                          context.watch<ProviderMaps>().polyline.toList(),
+                    )
+                  ],
                 ),
-                nonRotatedChildren: [
-                  AttributionWidget.defaultWidget(
-                    source: 'OpenStreetMap contributors',
-                    onSourceTapped: null,
-                  ),
-                ],
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.example.app',
-                  ),
-                  MarkerLayer(
-                    markers: context.watch<ProviderMaps>().markers.toList(),
-                  ),
-                  PolylineLayer(
-                    polylines: context.watch<ProviderMaps>().polyline.toList(),
-                  )
-                ],
               ),
             ),
           ),

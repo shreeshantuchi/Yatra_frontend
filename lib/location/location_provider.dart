@@ -21,8 +21,10 @@ class ProviderMaps with ChangeNotifier {
   late MapController _mapController;
   LatLng? get initialPos => initialposition;
   final Set<Marker> _markers = {};
+  final Set<Marker> _markers2 = {};
   final Set<Polyline> _polylines = {};
   Set<Marker> get markers => _markers;
+  Set<Marker> get markers2 => _markers2;
   Set<Polyline> get polyline => _polylines;
   String distance = "";
   MapController get mapController => _mapController;
@@ -74,8 +76,9 @@ class ProviderMaps with ChangeNotifier {
           latitude: position!.latitude.toString(),
           longitude: position!.longitude.toString());
       await storage.write(key: "lastLocation", value: position!.toString());
-      context.read<DataApi>().getFoodList();
-      context.read<DataApi>().getDestinationList();
+      // ignore: use_build_context_synchronously
+      context.read<DataApi>().getFoodList(context);
+      context.read<DataApi>().getDestinationList(context);
       placemarks = await placemarkFromCoordinates(
           position!.latitude, position!.longitude);
       controller.add(placemarks);
@@ -121,7 +124,7 @@ class ProviderMaps with ChangeNotifier {
         height: 50.h,
         width: 50.h,
         anchorPos: AnchorPos.align(AnchorAlign.top),
-        builder: (context) {
+        builder: (contexts) {
           return Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -142,6 +145,33 @@ class ProviderMaps with ChangeNotifier {
         point: location,
       ));
     }
+  }
+
+  void addMarker2(LatLng location, String imgUrl) {
+    _markers2.add(Marker(
+      height: 75.h,
+      width: 75.h,
+      anchorPos: AnchorPos.align(AnchorAlign.top),
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: MyColor.blackColor,
+          ),
+          height: 150,
+          width: 150,
+          child: Padding(
+            padding: EdgeInsets.all(5.0.sp),
+            child: CircleAvatar(
+              backgroundColor: Colors.black,
+              radius: 60.sp,
+              backgroundImage: NetworkImage(imgUrl),
+            ),
+          ),
+        );
+      },
+      point: location,
+    ));
   }
 
   void routermap() async {

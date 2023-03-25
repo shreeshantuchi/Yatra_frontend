@@ -178,10 +178,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           height: 15.h,
         ),
         ListTile(
-          onTap: () {
-            DataApi foodApi = DataApi();
-            foodApi.getFoodList();
-          },
+          onTap: () {},
           contentPadding: EdgeInsets.zero,
           leading: customIcon(iconData: PhosphorIcons.infoBold),
           title: const Text("App Information"),

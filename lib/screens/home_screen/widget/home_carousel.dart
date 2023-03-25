@@ -14,13 +14,15 @@ class HomeCarousel extends StatefulWidget {
   final double width;
   final double height;
   final List<DataModel> dataModelList;
-  const HomeCarousel(
-      {super.key,
-      required this.imagePaths,
-      this.width = 160,
-      this.scrollDirection = Axis.horizontal,
-      this.height = 215,
-      required this.dataModelList});
+
+  const HomeCarousel({
+    super.key,
+    required this.imagePaths,
+    this.width = 160,
+    this.scrollDirection = Axis.horizontal,
+    this.height = 215,
+    required this.dataModelList,
+  });
   final Axis scrollDirection;
 
   @override
@@ -38,7 +40,7 @@ class _HomeCarouselState extends State<HomeCarousel> {
       child: ListView.builder(
           shrinkWrap: true,
           scrollDirection: widget.scrollDirection,
-          itemCount: widget.dataModelList.length,
+          itemCount: 5,
           itemBuilder: ((context, index) {
             return GestureDetector(
               onTap: () {
@@ -90,8 +92,8 @@ class Cards extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20.sp),
                 child: dataModel.imageUrls!.isEmpty
-                    ? Image.asset(
-                        "assets/1.jpeg",
+                    ? Image.network(
+                        "https://alphapartners.lv/wp-content/themes/consultix/images/no-image-found-360x260.png",
                         fit: BoxFit.cover,
                       )
                     : Image.network(

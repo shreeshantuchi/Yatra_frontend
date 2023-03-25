@@ -99,8 +99,8 @@ class _SelectPreferneceScreenState extends State<SelectPreferneceScreen> {
                     horizontalPadding: 100,
                     text: "Set",
                     onTap: () async {
-                      context.read<DataApi>().getFoodList();
-                      context.read<DataApi>().getDestinationList();
+                      context.read<DataApi>().getFoodList(context);
+                      context.read<DataApi>().getDestinationList(context);
                       await interestAPi.updateInterest(
                           interestList: widget.interestSelected);
                       widget.push
