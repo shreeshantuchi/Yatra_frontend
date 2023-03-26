@@ -14,6 +14,7 @@ class HomeCarousel extends StatefulWidget {
   final double width;
   final double height;
   final List<DataModel> dataModelList;
+  final int itemCount;
 
   const HomeCarousel({
     super.key,
@@ -22,6 +23,7 @@ class HomeCarousel extends StatefulWidget {
     this.scrollDirection = Axis.horizontal,
     this.height = 215,
     required this.dataModelList,
+    this.itemCount = 5,
   });
   final Axis scrollDirection;
 
@@ -40,7 +42,7 @@ class _HomeCarouselState extends State<HomeCarousel> {
       child: ListView.builder(
           shrinkWrap: true,
           scrollDirection: widget.scrollDirection,
-          itemCount: 5,
+          itemCount: widget.itemCount,
           itemBuilder: ((context, index) {
             return GestureDetector(
               onTap: () {

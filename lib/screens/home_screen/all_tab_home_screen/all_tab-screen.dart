@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:yatra/models/food_model.dart';
+
 import 'package:yatra/repository/data_api.dart';
-import 'package:yatra/screens/home_screen/home_screen.dart';
+import 'package:yatra/screens/activity_screen/activity.dart';
+
 import 'package:yatra/screens/home_screen/widget/home_tab_screen/home_tab_screen.dart';
+
 import 'package:yatra/utils/colors.dart';
 
 class AllTab extends StatefulWidget {
@@ -140,6 +142,10 @@ class _AllTabState extends State<AllTab> {
                   imagePaths: foodImagePaths,
                   dataModel: context.watch<DataApi>().foodList,
                   dataModelPopular: context.watch<DataApi>().foodListPopular),
+              ActivityScreen(
+                dataModel: context.watch<DataApi>().activityList,
+                title: "Perfect for You",
+              ),
             ],
           ),
         ),

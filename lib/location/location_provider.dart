@@ -55,7 +55,8 @@ class ProviderMaps with ChangeNotifier {
   Stream<Position> listenToLocationChange() {
     const LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.bestForNavigation,
-      timeLimit: Duration(seconds: 1),
+      timeLimit: Duration(hours: 1),
+      distanceFilter: 100,
     );
 
     return Geolocator.getPositionStream(locationSettings: locationSettings);
@@ -66,7 +67,7 @@ class ProviderMaps with ChangeNotifier {
     const LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.bestForNavigation,
         timeLimit: Duration(hours: 1),
-        distanceFilter: 1);
+        distanceFilter: 100);
 
     positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
@@ -90,6 +91,7 @@ class ProviderMaps with ChangeNotifier {
 
   Future<Position?> determinePosition() async {
     position = await Geolocator.getCurrentPosition();
+
     initialposition = LatLng(position!.latitude, position!.longitude);
     notifyListeners();
     return position;

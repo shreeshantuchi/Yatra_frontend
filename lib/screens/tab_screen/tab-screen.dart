@@ -44,6 +44,7 @@ class _TabScreenState extends State<TabScreen> {
   void initState() {
     context.read<DataApi>().getFoodList(context);
     context.read<DataApi>().getDestinationList(context);
+    context.read<DataApi>().getActivityList(context);
     // TODO: implement initState
     super.initState();
   }

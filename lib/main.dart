@@ -48,8 +48,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<ProviderMaps>().checkLocationPermission();
-    // final storage = const FlutterSecureStorage();
-    // storage.deleteAll();
+    final storage = const FlutterSecureStorage();
+    storage.deleteAll();
 
     return ScreenUtilInit(
         designSize: const Size(430, 932),

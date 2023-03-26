@@ -6,6 +6,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:yatra/location/location_provider.dart';
+import 'package:yatra/models/activity_model.dart';
 
 import 'package:yatra/models/food_model.dart';
 
@@ -15,9 +16,10 @@ class DataApi extends ChangeNotifier {
   List<DataModel> foodList = [];
   List<DataModel> destinationList = [];
   List<DataModel> foodListPopular = [];
+  List<DataModel> activityList = [];
   List<DataModel> destinationListPopular = [];
   DataApi();
-
+  DataModel _activityModel = DataModel();
   DataModel _foodModel = DataModel();
   DataModel _destinationModel = DataModel();
   String? _getUserId(String? jwtToken) {
@@ -97,6 +99,34 @@ class DataApi extends ChangeNotifier {
       for (int i = 0; i < data.length; i++) {
         _foodModel = _foodModel.toMap(data[i], "FOD");
         foodList.add(_foodModel);
+
+        // context.read<ProviderMaps>().addMarker2(
+        //     LatLng(double.parse(_foodModel.latitude!),
+        //         double.parse(_foodModel.longitude!)),
+        //     _foodModel.imageUrls!.isEmpty
+        //         ? "https://alphapartners.lv/wp-content/themes/consultix/images/no-image-found-360x260.png"
+        //         : _foodModel.imageUrls![0]["image"]);
+      }
+    }
+
+    notifyListeners();
+  }
+
+  void getActivityList(BuildContext context) async {
+    activityList = [];
+    getFoodListPopular(context);
+
+    final storage = const FlutterSecureStorage();
+    String? uid = _getUserId(await storage.read(key: "jwt"));
+
+    String interestUrl = "http://10.0.2.2:8000/api/activities/recommend/$uid/";
+    var response = await http.get(Uri.parse(interestUrl));
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+
+      for (int i = 0; i < data.length; i++) {
+        _activityModel = _activityModel.toMap(data[i], "FOD");
+        activityList.add(_activityModel);
 
         // context.read<ProviderMaps>().addMarker2(
         //     LatLng(double.parse(_foodModel.latitude!),
